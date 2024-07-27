@@ -1,0 +1,153 @@
+﻿@model TBAM.Models.TestFormViewModel
+
+@{
+    ViewData["Title"] = "Test Form";
+}
+
+<h2 class="mb-4">@ViewData["Title"]</h2>
+
+<form asp-action="SubmitTestForm" method="post">
+    <div class="form-group">
+        <label for="PurposeOfTesting">Purpose of Testing</label>
+        <select id="PurposeOfTesting" name="PurposesOfTesting[0]" class="form-control">
+            @foreach (var purpose in Model.PurposesOfTesting)
+            {
+                <option value="@purpose">@purpose</option>
+            }
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="Plant">Plant</label>
+        <select id="Plant" name="Plants[0]" class="form-control">
+            @foreach (var plant in Model.Plants)
+            {
+                <option value="@plant">@plant</option>
+            }
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="TestDetails">Test Details</label>
+        <textarea id="TestDetails" name="TestDetails" class="form-control"></textarea>
+    </div>
+
+    <h3 class="mt-4">Line Items</h3>
+    <table id="lineItemsTable" class="table table-bordered mt-3">
+        <thead class="thead-light">
+            <tr>
+                <th>Product Code</th>
+                <th>Product Name</th>
+                <th>Workcentre</th>
+                <th>Quantity</th>
+                <th>Batch Number</th>
+                <th>Remarks</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i = 0; i < Model.LineItems.Count; i++)
+            {
+                <tr id="lineItemRow@i">
+                    <td>
+                        <select name="LineItems[@i].ProductCode" class="form-control">
+                            @foreach (var code in Model.ProductCodes)
+                            {
+                                var isSelected = Model.LineItems[i].ProductCode == code ? "selected" : "";
+                                <option value="@code" selected="@(isSelected)">@code</option>
+                            }
+                        </select>
+                    </td>
+                    <td>
+                        <input type="text" name="LineItems[@i].ProductName" value="@Model.LineItems[i].ProductName"
+                            class="form-control" />
+                    </td>
+                    <td>
+                        <select name="LineItems[@i].Workcentre" class="form-control">
+                            @foreach (var workcentre in Model.Workcentres)
+                            {
+                                var isSelected = Model.LineItems[i].Workcentre == workcentre ? "selected" : "";
+                                <option value="@workcentre" selected="@(isSelected)">@workcentre</option>
+                            }
+                        </select>
+                    </td>
+                    <td>
+                        <input type="text" name="LineItems[@i].Quantity" value="@Model.LineItems[i].Quantity"
+                            class="form-control" />
+                    </td>
+                    <td>
+                        <input type="text" name="LineItems[@i].BatchNumber" value="@Model.LineItems[i].BatchNumber"
+                            class="form-control" />
+                    </td>
+                    <td>
+                        <input type="text" name="LineItems[@i].Remarks" value="@Model.LineItems[i].Remarks"
+                            class="form-control" />
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-danger" onclick="removeLineItem(@i);">Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <button id="addLineItem" type="button" class="btn btn-primary">Add Line Item</button>
+
+    <hr />
+    <button type="submit" class="btn btn-success">Submit</button>
+</form>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script type="text/javascript">
+    var lineItemCounter = @Model.LineItems.Count;
+
+    @* window.addEventListener('beforeunload',function(e){
+        e.returnValue = "The unsaved data will get lost if you quit this tab."
+    }) *@
+
+    $(document).ready(function () {
+        $('#addLineItem').click(function () {
+            var selectedCodes = [];
+            $('select[name^="LineItems"][name$="ProductCode"]').each(function () {
+                selectedCodes.push($(this).val());
+            });
+
+            var allProductCodes = @Html.Raw(Json.Serialize(Model.ProductCodes));
+            var availableProductCodes = allProductCodes.filter(code => !selectedCodes.includes(code));
+
+            if (availableProductCodes.length === 0) {
+                alert("All product codes are already selected.");
+                return false;
+            }
+
+            var productOptions = availableProductCodes.map(code => `<option value="${code}">${code}</option>`).join('');
+
+            var availableWorkcentres = @Html.Raw(Json.Serialize(Model.Workcentres));
+            var workcentreOptions = '';
+            availableWorkcentres.forEach(function (workcentre) {
+                workcentreOptions += '<option value="' + workcentre + '">' + workcentre + '</option>';
+            });
+            
+            $('<tr id="lineItemRow' + lineItemCounter + '"><td>' +
+                '<select name="LineItems[' + lineItemCounter + '].ProductCode" class="form-control">' + productOptions + '</select>' +
+                '</td><td>' +
+                '<input type="text" name="LineItems[' + lineItemCounter + '].ProductName" class="form-control" />' +
+                '</td><td>' +
+                '<select name="LineItems[' + lineItemCounter + '].Workcentre" class="form-control">' + workcentreOptions + '</select>' +
+                '</td><td>' +
+                '<input type="text" name="LineItems[' + lineItemCounter + '].Quantity" class="form-control" />' +
+                '</td><td>' +
+                '<input type="text" name="LineItems[' + lineItemCounter + '].BatchNumber" class="form-control" />' +
+                '</td><td>' +
+                '<input type="text" name="LineItems[' + lineItemCounter + '].Remarks" class="form-control" />' +
+                '</td><td>' +
+                '<button type="button" class="btn btn-danger" onclick="removeLineItem(' + lineItemCounter + ');">Delete</button>' +
+                '</td></tr>').appendTo('#lineItemsTable tbody');
+            lineItemCounter++;
+            return false;
+        });
+
+    });
+
+    function removeLineItem(index) {
+        $('#lineItemRow' + index).remove();
+    }
+
+</script>
