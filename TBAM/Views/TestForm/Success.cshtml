@@ -5,4 +5,71 @@
 
 <h2>@ViewData["Title"]</h2>
 
-<p>Your form has been successfully submitted.</p>
+     <div class="form-group">
+        <label for="PurposeOfTesting">Purpose of Testing</label>
+        <select id="PurposeOfTesting" name="PurposesOfTesting[0]" class="form-control">
+            
+                <option value="@Model.PurposesOfTesting[0]">@Model.PurposesOfTesting[0]</option>
+            
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="Plant">Plant</label>
+        <select id="Plant" name="Plants[0]" class="form-control">
+                <option value="@Model.Plants[0]">@Model.Plants[0]</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="TestDetails">Test Details</label>
+        <textarea id="TestDetails" name="TestDetails" class="form-control" required>@Model.TestDetails</textarea>
+    </div>
+
+
+   <h3 class="mt-4">Line Items</h3>
+    <table id="lineItemsTable" class="table table-bordered mt-3">
+        <thead class="thead-light">
+            <tr>
+                <th>Product Code</th>
+                <th>Product Name</th>
+                <th>Workcentre</th>
+                <th>Quantity</th>
+                <th>Batch Number</th>
+                <th>Remarks</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i = 0; i < Model.LineItems.Count; i++)
+            {
+                <tr id="lineItemRow@i">
+                    <td>
+                        <select name="LineItems[@i].ProductCode" class="form-control">
+
+                                <option value="@Model.LineItems[i].ProductCode" selected="true">@Model.LineItems[i].ProductCode</option>
+                        </select>
+                    </td>
+                    <td>
+                        <input type="text" name="LineItems[@i].ProductName" value="@Model.LineItems[i].ProductName"
+                            class="form-control" />
+                    </td>
+                    <td>
+                        <select name="LineItems[@i].Workcentre" class="form-control">
+                                <option value="@Model.LineItems[i].Workcentre" selected="true">@Model.LineItems[i].Workcentre</option>
+                        </select>
+                    </td>
+                    <td>
+                        <input type="text" name="LineItems[@i].Quantity" value="@Model.LineItems[i].Quantity"
+                            class="form-control" />
+                    </td>
+                    <td>
+                        <input type="text" name="LineItems[@i].BatchNumber" value="@Model.LineItems[i].BatchNumber"
+                            class="form-control" />
+                    </td>
+                    <td>
+                        <input type="text" name="LineItems[@i].Remarks" value="@Model.LineItems[i].Remarks"
+                            class="form-control" />
+                    </td>
+
+                </tr>
+            }
+        </tbody>
+    </table>

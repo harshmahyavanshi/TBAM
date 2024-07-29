@@ -37,15 +37,16 @@ namespace TBAM.Controllers
                 // Save to database or perform other actions
 
                 // Redirect to a success page or return a success message
-                return RedirectToAction("Success");
+                 return View("Success",model);
+
             }
             var message = model.LineItems == null? "No LineItems": "" + model.TestDetails == null? "No Test Details entered.": "";
-            return Content($"<script language='javascript' type='text/javascript'>alert('Error Submitting form. {message}');</script>");
+            return View("/Home",model);
         }
 
-        public IActionResult Success()
+        public IActionResult Success(TestFormViewModel model)
         {
-            return View();
+            return View(model);
         }
 
         // public IActionResult Index()

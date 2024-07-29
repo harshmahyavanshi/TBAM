@@ -27,7 +27,7 @@
     </div>
     <div class="form-group">
         <label for="TestDetails">Test Details</label>
-        <textarea id="TestDetails" name="TestDetails" class="form-control"></textarea>
+        <textarea id="TestDetails" name="TestDetails" class="form-control" required></textarea>
     </div>
 
     <h3 class="mt-4">Line Items</h3>
@@ -43,7 +43,14 @@
                 <th>Actions</th>
             </tr>
         </thead>
+        
         <tbody>
+            @* @if(Model.LineItems.Count == 0)
+            {
+                <tr><td colspan="7" class="text-center">No data</td></tr>
+            }
+            else
+            {
             @for (int i = 0; i < Model.LineItems.Count; i++)
             {
                 <tr id="lineItemRow@i">
@@ -71,7 +78,7 @@
                     </td>
                     <td>
                         <input type="text" name="LineItems[@i].Quantity" value="@Model.LineItems[i].Quantity"
-                            class="form-control" />
+                            class="form-control" required/>
                     </td>
                     <td>
                         <input type="text" name="LineItems[@i].BatchNumber" value="@Model.LineItems[i].BatchNumber"
@@ -79,19 +86,21 @@
                     </td>
                     <td>
                         <input type="text" name="LineItems[@i].Remarks" value="@Model.LineItems[i].Remarks"
-                            class="form-control" />
+                            class="form-control" required/>
                     </td>
                     <td>
                         <button type="button" class="btn btn-danger" onclick="removeLineItem(@i);">Delete</button>
                     </td>
                 </tr>
             }
+
+            } *@
         </tbody>
     </table>
     <button id="addLineItem" type="button" class="btn btn-primary">Add Line Item</button>
 
     <hr />
-    <button type="submit" class="btn btn-success">Submit</button>
+    <button id="clickSubmit" type="submit" class="btn btn-success">Submit</button>
 </form>
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
@@ -102,7 +111,14 @@
         e.returnValue = "The unsaved data will get lost if you quit this tab."
     }) *@
 
+
     $(document).ready(function () {
+        @* $('#clickSubmit').click(function (event) {
+            console.log("Onsubmit should not work", event.target.form)//[0])
+            
+            return false;
+        }) *@
+
         $('#addLineItem').click(function () {
             var selectedCodes = [];
             $('select[name^="LineItems"][name$="ProductCode"]').each(function () {
@@ -126,17 +142,17 @@
             });
             
             $('<tr id="lineItemRow' + lineItemCounter + '"><td>' +
-                '<select name="LineItems[' + lineItemCounter + '].ProductCode" class="form-control">' + productOptions + '</select>' +
+                '<select name="LineItems[' + lineItemCounter + '].ProductCode" class="form-control" required>' + productOptions + '</select>' +
                 '</td><td>' +
                 '<input type="text" name="LineItems[' + lineItemCounter + '].ProductName" class="form-control" />' +
                 '</td><td>' +
-                '<select name="LineItems[' + lineItemCounter + '].Workcentre" class="form-control">' + workcentreOptions + '</select>' +
+                '<select name="LineItems[' + lineItemCounter + '].Workcentre" class="form-control" required>' + workcentreOptions + '</select>' +
                 '</td><td>' +
-                '<input type="text" name="LineItems[' + lineItemCounter + '].Quantity" class="form-control" />' +
+                '<input type="text" name="LineItems[' + lineItemCounter + '].Quantity" class="form-control" required/>' +
                 '</td><td>' +
                 '<input type="text" name="LineItems[' + lineItemCounter + '].BatchNumber" class="form-control" />' +
                 '</td><td>' +
-                '<input type="text" name="LineItems[' + lineItemCounter + '].Remarks" class="form-control" />' +
+                '<input type="text" name="LineItems[' + lineItemCounter + '].Remarks" class="form-control" required/>' +
                 '</td><td>' +
                 '<button type="button" class="btn btn-danger" onclick="removeLineItem(' + lineItemCounter + ');">Delete</button>' +
                 '</td></tr>').appendTo('#lineItemsTable tbody');
