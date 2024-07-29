@@ -1,9 +1,20 @@
+using Microsoft.EntityFrameworkCore;
+using TBAM.Data;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+var provider = builder.Services.BuildServiceProvider();
+
+var config = provider.GetRequiredService<IConfiguration>();
+
+builder.Services.AddDbContext<ApplicationDbContext>(item => item.UseNpgsql(config.GetConnectionString("conn")));
+
 
 var app = builder.Build();
+
+
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
