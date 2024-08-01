@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TBAM.Data;
@@ -11,9 +12,11 @@ using TBAM.Data;
 namespace TBAM.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240730053227_Db1")]
+    partial class Db1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -32,7 +35,7 @@ namespace TBAM.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("character varying(50)");
 
                     b.Property<int>("PlantId")
                         .HasColumnType("integer");
@@ -55,11 +58,11 @@ namespace TBAM.Migrations
 
                     b.Property<string>("ProductCode")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("character varying(50)");
 
                     b.Property<string>("ProductName")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("character varying(50)");
 
                     b.HasKey("Id");
 
@@ -76,7 +79,7 @@ namespace TBAM.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("character varying(20)");
 
                     b.HasKey("Id");
 
@@ -156,11 +159,12 @@ namespace TBAM.Migrations
                     b.Property<int?>("ModifiedBy")
                         .HasColumnType("integer");
 
-                    b.Property<int>("PlantId")
+                    b.Property<int>("Plant")
                         .HasColumnType("integer");
 
-                    b.Property<int>("PurposesOfTestingId")
-                        .HasColumnType("integer");
+                    b.Property<string>("PurposesOfTesting")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("Status")
                         .IsRequired()
@@ -184,7 +188,7 @@ namespace TBAM.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("BatchNumber")
-                        .HasColumnType("text");
+                        .HasColumnType("character varying(20)");
 
                     b.Property<int?>("Cost")
                         .HasColumnType("integer");
@@ -212,25 +216,25 @@ namespace TBAM.Migrations
 
                     b.Property<string>("ProductCode")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("character varying(20)");
 
                     b.Property<string>("ProductName")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("character varying(20)");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("integer");
 
                     b.Property<string>("Remarks")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("character varying(20)");
 
                     b.Property<int>("TestBatchId")
                         .HasColumnType("integer");
 
                     b.Property<string>("Workcentre")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("character varying(20)");
 
                     b.HasKey("Id");
 
@@ -314,8 +318,9 @@ namespace TBAM.Migrations
                     b.Property<bool?>("IsDeleted")
                         .HasColumnType("boolean");
 
-                    b.Property<int>("LoginId")
-                        .HasColumnType("integer");
+                    b.Property<string>("LoginId")
+                        .IsRequired()
+                        .HasColumnType("character varying(50)");
 
                     b.Property<DateTime?>("ModifiedAt")
                         .HasColumnType("timestamp with time zone");
@@ -341,7 +346,7 @@ namespace TBAM.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("character varying(20)");
 
                     b.Property<int>("PlantId")
                         .HasColumnType("integer");

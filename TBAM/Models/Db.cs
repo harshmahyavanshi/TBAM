@@ -6,17 +6,21 @@ namespace TBAM.Models
     {
         [Key]
         public int Id { get; set; }
-        [Column(TypeName = "character varying(50)")]
+        [Column(TypeName = "character varying(20)")]
         public required string FirstName { get; set; }
+
+        [Column(TypeName = "character varying(20)")]
         public required string LastName { get; set; }
+
+        [Column(TypeName = "character varying(40)")]
         public required string FullName { get; set; }
         public required string Email { get; set; }
         public required string Password { get; set; }
 
         public int? CreatedBy { get; set; }
         public DateTime? CreatedAt { get; set; }
-        public int? UpdatedBy { get; set; }
-        public DateTime? UpdatedAt { get; set; }
+        public int? ModifiedBy { get; set; }
+        public DateTime? ModifiedAt { get; set; }
         public int? DeletedBy { get; set; }
         public DateTime? DeletedAt { get; set; }
         public Boolean? IsDeleted { get; set; }
@@ -27,12 +31,12 @@ namespace TBAM.Models
         [Key]
         public int Id { get; set; }
 
-        [Column(TypeName = "character varying(50)")]
+        [Column(TypeName = "character varying(20)")]
         public required string RoleName { get; set; }
         public int? CreatedBy { get; set; }
         public DateTime? CreatedAt { get; set; }
-        public int? UpdatedBy { get; set; }
-        public DateTime? UpdatedAt { get; set; }
+        public int? ModifiedBy { get; set; }
+        public DateTime? ModifiedAt { get; set; }
         public int? DeletedBy { get; set; }
         public DateTime? DeletedAt { get; set; }
         public Boolean? IsDeleted { get; set; }
@@ -43,73 +47,80 @@ namespace TBAM.Models
         [Key]
         public int Id { get; set; }
 
-        [Column(TypeName = "character varying(50)")]
-        public int LoginId{ get; set; }
+        [ForeignKey("User")]
+        public int LoginId { get; set; }
 
         [ForeignKey("Role")]
         public int RoleId { get; set; }
+
+        [ForeignKey("User")]
         public int? CreatedBy { get; set; }
         public DateTime? CreatedAt { get; set; }
-        public int? UpdatedBy { get; set; }
-        public DateTime? UpdatedAt { get; set; }
+
+        [ForeignKey("User")]
+        public int? ModifiedBy { get; set; }
+        public DateTime? ModifiedAt { get; set; }
+
+        [ForeignKey("User")]
         public int? DeletedBy { get; set; }
         public DateTime? DeletedAt { get; set; }
         public Boolean? IsDeleted { get; set; }
     }
-    
-    public class Plants{
+
+    public class Plants
+    {
         [Key]
         public int Id { get; set; }
-        
-        [Column(TypeName = "character varying(50)")]
-        public required string Description {get; set;}
+
+        public required int PlantId { get; set; }
+
+        public required string Description { get; set; }
     }
 
-    public class ProductCodes{
+    public class ProductCodes
+    {
         [Key]
         public int Id { get; set; }
 
         [ForeignKey("Plants")]
-        public int PlantId {get; set;}
+        public int PlantId { get; set; }
 
-        [Column(TypeName = "character varying(20)")]
-        public required string ProductCode {get; set;}
-        
-        [Column(TypeName = "character varying(20)")]
-        public required string ProductName {get; set;}
+        public required string ProductCode { get; set; }
+
+        public required string ProductName { get; set; }
 
 
     }
-    public class Workcentres{
+    public class Workcentres
+    {
         [Key]
         public int Id { get; set; }
-        
+
         [ForeignKey("Plants")]
-        public int PlantId {get; set;}
+        public int PlantId { get; set; }
 
-        [Column(TypeName = "character varying(20)")]
-        public required string Description {get; set;}
+        public required string Description { get; set; }
     }
-    public class PurposesOfTesting{
+    public class PurposesOfTesting
+    {
         [Key]
         public int Id { get; set; }
 
-        [Column(TypeName = "character varying(20)")]
-        public required string Description {get; set;}
+        public required string Description { get; set; }
 
     }
 
-    public class TestBatch{
+    public class TestBatch
+    {
         [Key]
-        public int Id {get; set;}
-        
-        [Column(TypeName = "character varying(20)")]
-        public required string PurposesOfTesting { get; set; }
+        public int Id { get; set; }
 
-        [Column(TypeName = "character varying(20)")]
-        public required string Plant { get; set; }
+        [ForeignKey("PurposesOfTesting")]
+        public required int PurposesOfTestingId { get; set; }
 
-        [Column(TypeName = "character varying(20)")]
+        [ForeignKey("Plants")]
+        public required int PlantId { get; set; }
+
         public required string TestDetails { get; set; }
 
         [ForeignKey("User")]
@@ -117,45 +128,40 @@ namespace TBAM.Models
         public required DateTime CreatedAt { get; set; }
 
         [ForeignKey("User")]
-        public int? UpdatedBy { get; set; }
-        public DateTime? UpdatedAt { get; set; }
-        
+        public int? ModifiedBy { get; set; }
+        public DateTime? ModifiedAt { get; set; }
+
         [ForeignKey("User")]
         public int? DeletedBy { get; set; }
         public DateTime? DeletedAt { get; set; }
         public Boolean? IsDeleted { get; set; }
 
         [ForeignKey("User")]
-        public int ApprovedBy {get; set;}
+        public int ApprovedBy { get; set; }
 
         [ForeignKey("Role")]
-        public int ApproveLevel {get; set;}
+        public int ApproveLevel { get; set; }
 
-        public required string Status {get; set;}
+        public required string Status { get; set; }
     }
-    public class TestBatchItem{
+    public class TestBatchItem
+    {
         [Key]
-        public int Id {get; set;}
+        public int Id { get; set; }
 
         [ForeignKey("TestBatch")]
-        public int TestBatchId {get; set;}
-
-        [Column(TypeName = "character varying(20)")]
+        public required int TestBatchId { get; set; }
 
         public required string ProductCode { get; set; }
-        
-        [Column(TypeName = "character varying(20)")]
+
         public required string ProductName { get; set; }
 
-        [Column(TypeName = "character varying(20)")]
         public required string Workcentre { get; set; }
 
         public required int Quantity { get; set; }
 
-        [Column(TypeName = "character varying(20)")]
         public string? BatchNumber { get; set; }
 
-        [Column(TypeName = "character varying(20)")]
         public required string Remarks { get; set; }
 
         public int? Cost { get; set; }
@@ -165,8 +171,8 @@ namespace TBAM.Models
         public required DateTime CreatedAt { get; set; }
 
         [ForeignKey("User")]
-        public int? UpdatedBy { get; set; }
-        public DateTime? UpdatedAt { get; set; }
+        public int? ModifiedBy { get; set; }
+        public DateTime? ModifiedAt { get; set; }
 
         [ForeignKey("User")]
         public int? DeletedBy { get; set; }

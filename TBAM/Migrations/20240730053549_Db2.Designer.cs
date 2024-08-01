@@ -12,8 +12,8 @@ using TBAM.Data;
 namespace TBAM.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240729193230_Db")]
-    partial class Db
+    [Migration("20240730053549_Db2")]
+    partial class Db2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -37,6 +37,9 @@ namespace TBAM.Migrations
                         .IsRequired()
                         .HasColumnType("character varying(50)");
 
+                    b.Property<int>("PlantId")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
 
                     b.ToTable("Plants");
@@ -55,11 +58,11 @@ namespace TBAM.Migrations
 
                     b.Property<string>("ProductCode")
                         .IsRequired()
-                        .HasColumnType("character varying(20)");
+                        .HasColumnType("character varying(50)");
 
                     b.Property<string>("ProductName")
                         .IsRequired()
-                        .HasColumnType("character varying(20)");
+                        .HasColumnType("character varying(50)");
 
                     b.HasKey("Id");
 
@@ -106,15 +109,15 @@ namespace TBAM.Migrations
                     b.Property<bool?>("IsDeleted")
                         .HasColumnType("boolean");
 
-                    b.Property<string>("RoleName")
-                        .IsRequired()
-                        .HasColumnType("character varying(50)");
-
-                    b.Property<DateTime?>("UpdatedAt")
+                    b.Property<DateTime?>("ModifiedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int?>("UpdatedBy")
+                    b.Property<int?>("ModifiedBy")
                         .HasColumnType("integer");
+
+                    b.Property<string>("RoleName")
+                        .IsRequired()
+                        .HasColumnType("character varying(20)");
 
                     b.HasKey("Id");
 
@@ -150,13 +153,17 @@ namespace TBAM.Migrations
                     b.Property<bool?>("IsDeleted")
                         .HasColumnType("boolean");
 
-                    b.Property<string>("Plant")
-                        .IsRequired()
-                        .HasColumnType("character varying(20)");
+                    b.Property<DateTime?>("ModifiedAt")
+                        .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("PurposesOfTesting")
-                        .IsRequired()
-                        .HasColumnType("character varying(20)");
+                    b.Property<int?>("ModifiedBy")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("PlantId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("PurposesOfTestingId")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Status")
                         .IsRequired()
@@ -164,13 +171,7 @@ namespace TBAM.Migrations
 
                     b.Property<string>("TestDetails")
                         .IsRequired()
-                        .HasColumnType("character varying(20)");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int?>("UpdatedBy")
-                        .HasColumnType("integer");
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
@@ -206,6 +207,12 @@ namespace TBAM.Migrations
                     b.Property<bool?>("IsDeleted")
                         .HasColumnType("boolean");
 
+                    b.Property<DateTime?>("ModifiedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int?>("ModifiedBy")
+                        .HasColumnType("integer");
+
                     b.Property<string>("ProductCode")
                         .IsRequired()
                         .HasColumnType("character varying(20)");
@@ -222,12 +229,6 @@ namespace TBAM.Migrations
                         .HasColumnType("character varying(20)");
 
                     b.Property<int>("TestBatchId")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int?>("UpdatedBy")
                         .HasColumnType("integer");
 
                     b.Property<string>("Workcentre")
@@ -265,28 +266,28 @@ namespace TBAM.Migrations
 
                     b.Property<string>("FirstName")
                         .IsRequired()
-                        .HasColumnType("character varying(50)");
+                        .HasColumnType("character varying(20)");
 
                     b.Property<string>("FullName")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("character varying(40)");
 
                     b.Property<bool?>("IsDeleted")
                         .HasColumnType("boolean");
 
                     b.Property<string>("LastName")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<DateTime?>("ModifiedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int?>("ModifiedBy")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int?>("UpdatedBy")
-                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
@@ -320,13 +321,13 @@ namespace TBAM.Migrations
                         .IsRequired()
                         .HasColumnType("character varying(50)");
 
-                    b.Property<int>("RoleId")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime?>("UpdatedAt")
+                    b.Property<DateTime?>("ModifiedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int?>("UpdatedBy")
+                    b.Property<int?>("ModifiedBy")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("RoleId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");

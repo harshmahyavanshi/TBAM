@@ -1,0 +1,122 @@
+﻿@model TBAM.Models.TestFormViewModel
+
+@{
+    ViewData["Title"] = "Test Form";
+    Layout = "_Layout";
+}
+
+<h2 class="mb-4">@ViewData["Title"]</h2>
+
+<form asp-action="SubmitTestForm" method="post">
+    <div class="form-group">
+        <label for="PurposeOfTesting">Purpose of Testing</label>
+        <select id="PurposeOfTesting" name="PurposesOfTesting[0]" class="form-control">
+            @foreach (var purpose in Model.PurposesOfTesting)
+            {
+                <option value="@purpose">@purpose</option>
+            }
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="Plant">Plant</label>
+        <select id="Plant" name="Plants[0]" class="form-control">
+            @foreach (var plant in Model.Plants)
+            {
+                <option value="@plant">@plant</option>
+            }
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="TestDetails">Test Details</label>
+        <textarea id="TestDetails" name="TestDetails" class="form-control" required></textarea>
+    </div>
+
+    <h3 class="mt-4">Line Items</h3>
+    <table id="lineItemsTable" class="table table-bordered mt-3">
+        <thead class="thead-light">
+            <tr>
+                <th>Product Code</th>
+                <th>Product Name</th>
+                <th>Workcentre</th>
+                <th>Quantity</th>
+                <th>Remarks</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+        </tbody>
+    </table>
+    <button id="addLineItem" type="button" class="btn btn-primary">Add Line Item</button>
+
+    <hr />
+    <button id="clickSubmit" type="submit" class="btn btn-success">Submit</button>
+</form>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script type="text/javascript">
+
+    $(document).ready(async function () {
+        var lineItemCounter = 1;
+
+        var productCodeToNameMap = {};
+    @foreach (var product in Model.Products)
+    {
+        @:productCodeToNameMap["@product.ProductCode"] = "@product.ProductName";
+    }
+            $('#addLineItem').click(function () {
+                var selectedProducts = {};
+                $('select[name^="LineItems"][name$="ProductCode"]').each(function () {
+                    var code = $(this).val();
+                    var name = $(this).closest('tr').find('select[name^="LineItems"][name$="ProductName"]').val();
+                    selectedProducts[code] = name;
+                });
+
+
+
+                var allProductCodes = @Html.Raw(Json.Serialize(Model.ProductCodes));
+                var allProductNames = @Html.Raw(Json.Serialize(Model.ProductNames));
+
+
+
+                var availableProductCodes = allProductCodes.filter(code => !(code in selectedProducts));
+
+                if (availableProductCodes.length === 0) {
+                    alert("All product codes are already selected.");
+                    return false;
+                }
+
+                var productOptions = availableProductCodes.map(code => `<option value="${code}">${code}</option>`).join('');
+                var productNameOptions = availableProductCodes.map(code => `<option value="${productCodeToNameMap[code]}">${productCodeToNameMap[code]}</option>`).join('');
+
+                var availableWorkcentres = @Html.Raw(Json.Serialize(Model.Workcentres));
+                var workcentreOptions = '';
+                availableWorkcentres.forEach(function (workcentre) {
+                    workcentreOptions += '<option value="' + workcentre + '">' + workcentre + '</option>';
+                });
+
+                $('<tr id="lineItemRow' + lineItemCounter + '"><td>' +
+                    '<select name="LineItems[' + lineItemCounter + '].ProductCode" class="form-control product-code-select" required>' + productOptions + '</select>' +
+                    '</td><td>' +
+                    '<select name="LineItems[' + lineItemCounter + '].ProductName" class="form-control product-name-select" required>' + productNameOptions + '</select>' +
+                    '</td><td>' +
+                    '<select name="LineItems[' + lineItemCounter + '].Workcentre" class="form-control" required>' + workcentreOptions + '</select>' +
+                    '</td><td>' +
+                    '<input type="text" name="LineItems[' + lineItemCounter + '].Quantity" class="form-control" required/>' +
+                    '</td><td>' +
+                    '<input type="text" name="LineItems[' + lineItemCounter + '].Remarks" class="form-control" required/>' +
+                    '</td><td>' +
+                    '<button type="button" class="btn btn-danger" onclick="removeLineItem(' + lineItemCounter + ');">Delete</button>' +
+                    '</td></tr>').appendTo('#lineItemsTable tbody');
+                lineItemCounter++;
+                return false;
+            });
+
+    });
+
+    async function removeLineItem(index) {
+        await $('#lineItemRow' + index).remove();
+    }
+
+</script>

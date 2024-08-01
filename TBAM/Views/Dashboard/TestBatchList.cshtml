@@ -1,0 +1,59 @@
+@model TBAM.Models.TestFormViewModel
+
+@{
+    ViewData["Title"] = "Test Batch List";
+    Layout = "_Layout";
+
+}
+
+<h2>@ViewData["Title"]</h2>
+
+     @* <div class="form-group">
+        <label for="PurposeOfTesting">Purpose of Testing</label>
+        <select id="PurposeOfTesting" name="PurposesOfTesting[0]" class="form-control">
+            
+                <option value="@Model.PurposesOfTesting[0]">@Model.PurposesOfTesting[0]</option>
+            
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="Plant">Plant</label>
+        <select id="Plant" name="Plants[0]" class="form-control">
+                <option value="@Model.Plants[0]">@Model.Plants[0]</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="TestDetails">Test Details</label>
+        <textarea id="TestDetails" name="TestDetails" class="form-control" required>@Model.TestDetails</textarea>
+    </div> *@
+
+
+   <h3 class="mt-4">Test Batch List</h3>
+    <table id="lineItemsTable" class="table table-bordered mt-3">
+        <thead class="thead-light">
+            <tr>
+                <th>Purpose of Testing</th>
+                <th>Plant</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+
+                <tr id="lineItemRow@i">
+                    <td>
+                        <input type="text" name="Model.ProductCodes[0]" value="@Model.PurposesOfTesting[0]"
+                            class="form-control" disabled />
+                    </td>
+                   
+                    <td>
+                        <input type="text" name="Model.Plants[0]" value="@Model.Plants[0]"
+                            class="form-control" disabled />
+                    </td>
+                    <td>
+                        <button id="edit" type="button" class="btn btn-primary">Edit Test Batch</button>
+
+                    </td>
+                </tr>
+        
+        </tbody>
+    </table>

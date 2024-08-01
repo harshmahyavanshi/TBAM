@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace TBAM.Migrations
 {
     /// <inheritdoc />
-    public partial class Db : Migration
+    public partial class Db1 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -18,6 +18,7 @@ namespace TBAM.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    PlantId = table.Column<int>(type: "integer", nullable: false),
                     Description = table.Column<string>(type: "character varying(50)", nullable: false)
                 },
                 constraints: table =>
@@ -32,8 +33,8 @@ namespace TBAM.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     PlantId = table.Column<int>(type: "integer", nullable: false),
-                    ProductCode = table.Column<string>(type: "character varying(20)", nullable: false),
-                    ProductName = table.Column<string>(type: "character varying(20)", nullable: false)
+                    ProductCode = table.Column<string>(type: "character varying(50)", nullable: false),
+                    ProductName = table.Column<string>(type: "character varying(50)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -59,11 +60,11 @@ namespace TBAM.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    RoleName = table.Column<string>(type: "character varying(50)", nullable: false),
+                    RoleName = table.Column<string>(type: "character varying(20)", nullable: false),
                     CreatedBy = table.Column<int>(type: "integer", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    UpdatedBy = table.Column<int>(type: "integer", nullable: true),
-                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    ModifiedBy = table.Column<int>(type: "integer", nullable: true),
+                    ModifiedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     DeletedBy = table.Column<int>(type: "integer", nullable: true),
                     DeletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     IsDeleted = table.Column<bool>(type: "boolean", nullable: true)
@@ -79,13 +80,13 @@ namespace TBAM.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    PurposesOfTesting = table.Column<string>(type: "character varying(20)", nullable: false),
-                    Plant = table.Column<string>(type: "character varying(20)", nullable: false),
-                    TestDetails = table.Column<string>(type: "character varying(20)", nullable: false),
+                    PurposesOfTesting = table.Column<string>(type: "text", nullable: false),
+                    Plant = table.Column<int>(type: "integer", nullable: false),
+                    TestDetails = table.Column<string>(type: "text", nullable: false),
                     CreatedBy = table.Column<int>(type: "integer", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    UpdatedBy = table.Column<int>(type: "integer", nullable: true),
-                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    ModifiedBy = table.Column<int>(type: "integer", nullable: true),
+                    ModifiedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     DeletedBy = table.Column<int>(type: "integer", nullable: true),
                     DeletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     IsDeleted = table.Column<bool>(type: "boolean", nullable: true),
@@ -114,8 +115,8 @@ namespace TBAM.Migrations
                     Cost = table.Column<int>(type: "integer", nullable: true),
                     CreatedBy = table.Column<int>(type: "integer", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    UpdatedBy = table.Column<int>(type: "integer", nullable: true),
-                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    ModifiedBy = table.Column<int>(type: "integer", nullable: true),
+                    ModifiedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     DeletedBy = table.Column<int>(type: "integer", nullable: true),
                     DeletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     IsDeleted = table.Column<bool>(type: "boolean", nullable: true)
@@ -131,15 +132,15 @@ namespace TBAM.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    FirstName = table.Column<string>(type: "character varying(50)", nullable: false),
-                    LastName = table.Column<string>(type: "text", nullable: false),
-                    FullName = table.Column<string>(type: "text", nullable: false),
+                    FirstName = table.Column<string>(type: "character varying(20)", nullable: false),
+                    LastName = table.Column<string>(type: "character varying(20)", nullable: false),
+                    FullName = table.Column<string>(type: "character varying(40)", nullable: false),
                     Email = table.Column<string>(type: "text", nullable: false),
                     Password = table.Column<string>(type: "text", nullable: false),
                     CreatedBy = table.Column<int>(type: "integer", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    UpdatedBy = table.Column<int>(type: "integer", nullable: true),
-                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    ModifiedBy = table.Column<int>(type: "integer", nullable: true),
+                    ModifiedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     DeletedBy = table.Column<int>(type: "integer", nullable: true),
                     DeletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     IsDeleted = table.Column<bool>(type: "boolean", nullable: true)
@@ -159,8 +160,8 @@ namespace TBAM.Migrations
                     RoleId = table.Column<int>(type: "integer", nullable: false),
                     CreatedBy = table.Column<int>(type: "integer", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    UpdatedBy = table.Column<int>(type: "integer", nullable: true),
-                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    ModifiedBy = table.Column<int>(type: "integer", nullable: true),
+                    ModifiedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     DeletedBy = table.Column<int>(type: "integer", nullable: true),
                     DeletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     IsDeleted = table.Column<bool>(type: "boolean", nullable: true)
