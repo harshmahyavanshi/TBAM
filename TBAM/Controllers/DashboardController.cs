@@ -24,22 +24,10 @@ namespace TBAM.Controllers
         {
             if (HttpContext.Session.Get("userId") != null)
             {
-                var ProductCodes = _context.ProductCodes.Select(p => p.ProductCode).ToList();
-                var ProductNames = _context.ProductCodes.Select(p => p.ProductName).ToList();
-                var Products = new List<Product>();
-                int i = 0;
-                foreach (var ProductCode in ProductCodes)
-                {
-                    Products.Add(new Product { ProductCode = ProductCode, ProductName = ProductNames[i] });
-                    i++;
-                }
-
                 var model = new TestFormViewModel
                 {
                     LineItems = new List<LineItem>(),
-                    Products = Products,
-                    ProductCodes = ProductCodes,
-                    ProductNames = ProductNames,
+                    Products = _context.ProductCodes.Select(p => new Product { ProductCode = p.ProductCode, ProductName = p.ProductName }).ToList(),
                     Workcentres = new List<string> { "Workcentre1", "Workcentre2" /* add more workcentres here */ },
                     PurposesOfTesting = _context.PurposesOfTesting.Select(p => p.Description).ToList(),//new List<string> { "MDR", "USFDA", "In-house validation", "Regulatory submission", "Audit query", "Alternate vendor", "Other" },
                     Plants = _context.Plants.Select(p => p.PlantId).ToList(),
@@ -59,7 +47,7 @@ namespace TBAM.Controllers
                 // Save to database or perform other actions
 
                 // Redirect to a success page or return a success message
-                return View("TestBatchList", model);
+                return RedirectToAction("TestBatchList","Dashboard", model);
 
             // }
             // var message = model.LineItems == null ? "No LineItems" : "" + model.TestDetails == null ? "No Test Details entered." : "";

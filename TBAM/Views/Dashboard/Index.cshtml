@@ -78,9 +78,7 @@
                 selectedProducts[code] = name;
             });
 
-            var allProductCodes = @Html.Raw(Json.Serialize(Model.ProductCodes));
-            var allProductNames = @Html.Raw(Json.Serialize(Model.ProductNames));
-
+            var allProductCodes = Object.keys(productCodeToNameMap);
             var availableProductCodes = allProductCodes.filter(code => !(code in selectedProducts));
 
             if (availableProductCodes.length === 0) {
@@ -89,7 +87,7 @@
             }
 
             var productOptions = availableProductCodes.map(code => `<option value="${code}">${code}</option>`).join('');
-            var productNameOptions = availableProductCodes.map(code => `<option value="${productCodeToNameMap[code]}">${productCodeToNameMap[code]}</option>`).join('');
+            var productNameOptions = availableProductCodes.map(code => `<option value="${productCodeToNameMap[code]}" >${productCodeToNameMap[code]}</option>`).join('');
 
             var availableWorkcentres = @Html.Raw(Json.Serialize(Model.Workcentres));
             var workcentreOptions = '';
@@ -100,7 +98,7 @@
             $('<tr id="lineItemRow' + lineItemCounter + '"><td>' +
                 '<select name="LineItems[' + lineItemCounter + '].ProductCode" class="form-control product-code-select" required>' + productOptions + '</select>' +
                 '</td><td>' +
-                '<select name="LineItems[' + lineItemCounter + '].ProductName" class="form-control product-name-select" disabled required>' + productNameOptions + '</select>' +
+                '<select name="LineItems[' + lineItemCounter + '].ProductName" class="form-control product-name-select" style="pointer-events: none;" required>' + productNameOptions + '</select>' +
                 '</td><td>' +
                 '<select name="LineItems[' + lineItemCounter + '].Workcentre" class="form-control" required>' + workcentreOptions + '</select>' +
                 '</td><td>' +

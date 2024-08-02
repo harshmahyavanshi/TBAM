@@ -7,9 +7,6 @@ public class TestFormViewModel
 {
     public required List<LineItem> LineItems { get; set; }
     public List<Product>? Products { get; set; }
-    public  List<string>? ProductCodes { get; set; }
-    public  List<string>? ProductNames { get; set; }
-
     public  List<string>? Workcentres { get; set; }
     public required List<string> PurposesOfTesting { get; set; }
     public required List<int> Plants { get; set; }
