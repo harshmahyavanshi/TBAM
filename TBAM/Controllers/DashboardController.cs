@@ -10,7 +10,7 @@ namespace TBAM.Controllers
     {
         private readonly ILogger<DashboardController> _logger;
 
-        private readonly ApplicationDbContext _context ;
+        private readonly ApplicationDbContext _context;
 
 
         public DashboardController(ILogger<DashboardController> logger, ApplicationDbContext context)
@@ -22,48 +22,48 @@ namespace TBAM.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            if(HttpContext.Session.Get("userId") != null)
+            if (HttpContext.Session.Get("userId") != null)
             {
-                var ProductCodes = _context.ProductCodes.Select(p=> p.ProductCode).ToList();
+                var ProductCodes = _context.ProductCodes.Select(p => p.ProductCode).ToList();
                 var ProductNames = _context.ProductCodes.Select(p => p.ProductName).ToList();
                 var Products = new List<Product>();
-                int i=0;
-                foreach(var code in ProductCodes)
+                int i = 0;
+                foreach (var ProductCode in ProductCodes)
                 {
-                    Products.Add(new Product { ProductCode = code, ProductName = ProductNames[i] });
+                    Products.Add(new Product { ProductCode = ProductCode, ProductName = ProductNames[i] });
                     i++;
                 }
 
-            var model = new TestFormViewModel
-            {
-                LineItems = new List<LineItem>(),
-                Products = Products,
-                ProductCodes = _context.ProductCodes.Select(p=> p.ProductCode).ToList(),
-                ProductNames = _context.ProductCodes.Select(p=> p.ProductName).ToList(),
-                Workcentres = new List<string> { "Workcentre1", "Workcentre2" /* add more workcentres here */ },
-                PurposesOfTesting = _context.PurposesOfTesting.Select(p => p.Description).ToList(),//new List<string> { "MDR", "USFDA", "In-house validation", "Regulatory submission", "Audit query", "Alternate vendor", "Other" },
-                Plants = _context.Plants.Select(p => p.PlantId).ToList(),
-                TestDetails = ""
-            };
-            return View(model);
+                var model = new TestFormViewModel
+                {
+                    LineItems = new List<LineItem>(),
+                    Products = Products,
+                    ProductCodes = ProductCodes,
+                    ProductNames = ProductNames,
+                    Workcentres = new List<string> { "Workcentre1", "Workcentre2" /* add more workcentres here */ },
+                    PurposesOfTesting = _context.PurposesOfTesting.Select(p => p.Description).ToList(),//new List<string> { "MDR", "USFDA", "In-house validation", "Regulatory submission", "Audit query", "Alternate vendor", "Other" },
+                    Plants = _context.Plants.Select(p => p.PlantId).ToList(),
+                    TestDetails = ""
+                };
+                return View(model);
             }
-            return RedirectToAction("Index","Login");
+            return RedirectToAction("Index", "Login");
         }
 
         [HttpPost]
         public IActionResult SubmitTestForm(TestFormViewModel model)
         {
-            if (ModelState.IsValid)
-            {
+            // if (ModelState.IsValid)
+            // {
                 // Process the form data
                 // Save to database or perform other actions
 
                 // Redirect to a success page or return a success message
-                 return View("TestBatchList",model);
+                return View("TestBatchList", model);
 
-            }
-            var message = model.LineItems == null? "No LineItems": "" + model.TestDetails == null? "No Test Details entered.": "";
-            return View("/Home",model);
+            // }
+            // var message = model.LineItems == null ? "No LineItems" : "" + model.TestDetails == null ? "No Test Details entered." : "";
+            // return View("Index", model);
         }
 
         public IActionResult Success(TestFormViewModel model)
@@ -105,7 +105,7 @@ namespace TBAM.Controllers
         public ActionResult Logout()
         {
             HttpContext.Session.Clear();//remove session
-            return RedirectToAction("Index","Login");
+            return RedirectToAction("Index", "Login");
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

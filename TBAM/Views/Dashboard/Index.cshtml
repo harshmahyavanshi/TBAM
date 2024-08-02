@@ -56,63 +56,63 @@
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 <script type="text/javascript">
-
+    var lineItemCounter = 0;
+    console.log("script running")
     $(document).ready(async function () {
-        var lineItemCounter = 1;
-
         var productCodeToNameMap = {};
     @foreach (var product in Model.Products)
     {
         @:productCodeToNameMap["@product.ProductCode"] = "@product.ProductName";
     }
-            $('#addLineItem').click(function () {
-                var selectedProducts = {};
-                $('select[name^="LineItems"][name$="ProductCode"]').each(function () {
-                    var code = $(this).val();
-                    var name = $(this).closest('tr').find('select[name^="LineItems"][name$="ProductName"]').val();
-                    selectedProducts[code] = name;
-                });
+        $('#lineItemsTable').on('change', 'select[name^="LineItems"][name$="ProductCode"]', function () {
+            console.log("on change")
+            var code = $(this).val();
+            $(this).closest('tr').find('select[name^="LineItems"][name$="ProductName"]').val(productCodeToNameMap[code]);
+        });
 
-
-
-                var allProductCodes = @Html.Raw(Json.Serialize(Model.ProductCodes));
-                var allProductNames = @Html.Raw(Json.Serialize(Model.ProductNames));
-
-
-
-                var availableProductCodes = allProductCodes.filter(code => !(code in selectedProducts));
-
-                if (availableProductCodes.length === 0) {
-                    alert("All product codes are already selected.");
-                    return false;
-                }
-
-                var productOptions = availableProductCodes.map(code => `<option value="${code}">${code}</option>`).join('');
-                var productNameOptions = availableProductCodes.map(code => `<option value="${productCodeToNameMap[code]}">${productCodeToNameMap[code]}</option>`).join('');
-
-                var availableWorkcentres = @Html.Raw(Json.Serialize(Model.Workcentres));
-                var workcentreOptions = '';
-                availableWorkcentres.forEach(function (workcentre) {
-                    workcentreOptions += '<option value="' + workcentre + '">' + workcentre + '</option>';
-                });
-
-                $('<tr id="lineItemRow' + lineItemCounter + '"><td>' +
-                    '<select name="LineItems[' + lineItemCounter + '].ProductCode" class="form-control product-code-select" required>' + productOptions + '</select>' +
-                    '</td><td>' +
-                    '<select name="LineItems[' + lineItemCounter + '].ProductName" class="form-control product-name-select" required>' + productNameOptions + '</select>' +
-                    '</td><td>' +
-                    '<select name="LineItems[' + lineItemCounter + '].Workcentre" class="form-control" required>' + workcentreOptions + '</select>' +
-                    '</td><td>' +
-                    '<input type="text" name="LineItems[' + lineItemCounter + '].Quantity" class="form-control" required/>' +
-                    '</td><td>' +
-                    '<input type="text" name="LineItems[' + lineItemCounter + '].Remarks" class="form-control" required/>' +
-                    '</td><td>' +
-                    '<button type="button" class="btn btn-danger" onclick="removeLineItem(' + lineItemCounter + ');">Delete</button>' +
-                    '</td></tr>').appendTo('#lineItemsTable tbody');
-                lineItemCounter++;
-                return false;
+        $('#addLineItem').click(function () {
+            var selectedProducts = {};
+            $('select[name^="LineItems"][name$="ProductCode"]').each(function () {
+                var code = $(this).val();
+                var name = $(this).closest('tr').find('select[name^="LineItems"][name$="ProductName"]').val();
+                selectedProducts[code] = name;
             });
 
+            var allProductCodes = @Html.Raw(Json.Serialize(Model.ProductCodes));
+            var allProductNames = @Html.Raw(Json.Serialize(Model.ProductNames));
+
+            var availableProductCodes = allProductCodes.filter(code => !(code in selectedProducts));
+
+            if (availableProductCodes.length === 0) {
+                alert("All product codes are already selected.");
+                return false;
+            }
+
+            var productOptions = availableProductCodes.map(code => `<option value="${code}">${code}</option>`).join('');
+            var productNameOptions = availableProductCodes.map(code => `<option value="${productCodeToNameMap[code]}">${productCodeToNameMap[code]}</option>`).join('');
+
+            var availableWorkcentres = @Html.Raw(Json.Serialize(Model.Workcentres));
+            var workcentreOptions = '';
+            availableWorkcentres.forEach(function (workcentre) {
+                workcentreOptions += '<option value="' + workcentre + '">' + workcentre + '</option>';
+            });
+
+            $('<tr id="lineItemRow' + lineItemCounter + '"><td>' +
+                '<select name="LineItems[' + lineItemCounter + '].ProductCode" class="form-control product-code-select" required>' + productOptions + '</select>' +
+                '</td><td>' +
+                '<select name="LineItems[' + lineItemCounter + '].ProductName" class="form-control product-name-select" disabled required>' + productNameOptions + '</select>' +
+                '</td><td>' +
+                '<select name="LineItems[' + lineItemCounter + '].Workcentre" class="form-control" required>' + workcentreOptions + '</select>' +
+                '</td><td>' +
+                '<input type="number" min="1" value="1" name="LineItems[' + lineItemCounter + '].Quantity" class="form-control" required/>' +
+                '</td><td>' +
+                '<input type="text" name="LineItems[' + lineItemCounter + '].Remarks" class="form-control" required/>' +
+                '</td><td>' +
+                '<button type="button" class="btn btn-danger" onclick="removeLineItem(' + lineItemCounter + ');">Delete</button>' +
+                '</td></tr>').appendTo('#lineItemsTable tbody');
+            lineItemCounter++;
+            return false;
+        });
     });
 
     async function removeLineItem(index) {
