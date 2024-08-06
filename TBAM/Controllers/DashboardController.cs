@@ -35,7 +35,8 @@ namespace TBAM.Controllers
                         Workcentres = new List<string> { "Workcentre1", "Workcentre2" /* add more workcentres here */ },
                         PurposesOfTesting = _context.PurposesOfTesting.Select(p => p.Description).ToList(),//new List<string> { "MDR", "USFDA", "In-house validation", "Regulatory submission", "Audit query", "Alternate vendor", "Other" },
                         Plants = _context.Plants.Select(p => p.PlantId).ToList(),
-                        TestDetails = ""
+                        TestDetails = "",
+                        RefNo = ""
                     };
                     return View(model);
                 }
@@ -53,7 +54,10 @@ namespace TBAM.Controllers
                         PurposesOfTesting = _context.PurposesOfTesting.Select(p => p.Description).ToList(),//new List<string> { "MDR", "USFDA", "In-house validation", "Regulatory submission", "Audit query", "Alternate vendor", "Other" },
                         Plants = _context.Plants.Select(p => p.PlantId).ToList(),
                         TestDetails = testBatch.TestDetails,
-                        RefNo = RefNo,
+                        SelectedPlant = testBatch.Plant,
+                        SelectedPurposeofTesting = testBatch.PurposesOfTesting,
+                        RefNo = RefNo
+
                     };
                     return View(model);
                 }

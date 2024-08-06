@@ -13,6 +13,10 @@ public class TestFormViewModel
 
     public required string TestDetails { get; set; }
     public string RefNo {get; set;}
+
+    public int SelectedPlant {get; set;}
+
+    public string SelectedPurposeofTesting {get; set;}
      
 
 }
