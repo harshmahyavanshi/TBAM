@@ -1,167 +1,53 @@
-﻿@model TBAM.Models.TestFormViewModel
-
 @{
-    ViewData["Title"] = "Test Form";
+    ViewData["Title"] = "Dashboard";
     Layout = "_Layout";
 }
 
-<h2 class="mb-4">@ViewData["Title"]</h2>
+<section class="container p-3">
 
-<form asp-action="SubmitTestForm" method="post">
-    <div class="form-group">
-        <input type="hidden" name="RefNo" class="form-control" required/>
-        <label for="PurposeOfTesting">Purpose of Testing</label>
-        <select id="PurposeOfTesting" name="PurposesOfTesting[0]" class="form-control">
-            @foreach (var purpose in Model.PurposesOfTesting)
-            {
-                <option value="@purpose">@purpose</option>
-            }
-        </select>
-    </div>
-    <div class="form-group">
-        <label for="Plant">Plant</label>
-        <select id="Plant" name="Plants[0]" class="form-control">
-            @foreach (var plant in Model.Plants)
-            {
-                <option value="@plant">@plant</option>
-            }
-        </select>
-    </div>
-    <div class="form-group">
-        <label for="TestDetails">Test Details</label>
-        <textarea id="TestDetails" name="TestDetails" class="form-control" required></textarea>
-    </div>
+      <div class="card-text text-center p-3 line" style="font-size: 20px;font-weight: 500;text-decoration: underline;">Welcome! </div>
+      <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-4">
+    
+    
+        <!-- LUP START -->
+        <a href="#" class="col" style="text-decoration: none; color: black;">
+          <div class="card" style="background-color: #C6F4D6;">
+            <div class="card-body">
+              <h5 class="card-title text-center" style="color: #666;">Total Created
+              <p class="card-text text-center" style="font-size: 50px;font-weight: 900;">50</p>
+            </div>
+          </div>
+        </a>
 
-    <h3 class="mt-4">Line Items</h3>
-    <table id="lineItemsTable" class="table table-bordered mt-3">
-        <thead class="thead-light">
-            <tr>
-                <th>Product Code</th>
-                <th>Product Name</th>
-                <th>Workcentre</th>
-                <th>Quantity</th>
-                <th>Remarks</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
+        <a href="#" class="col" style="text-decoration: none; color: black;">
+          <div class="card" style="background-color: #C6F4D6;">
+            <div class="card-body">
+              <h5 class="card-title text-center" style="color: #666;">Pending in QC
+              <p class="card-text text-center" style="font-size: 50px;font-weight: 900;">50</p>
+            </div>
+          </div>
+        </a>
 
-        <tbody>
+        <a href="#" class="col" style="text-decoration: none; color: black;">
+          <div class="card" style="background-color: #C6F4D6;">
+            <div class="card-body">
+              <h5 class="card-title text-center" style="color: #666;">Pending in Accounts
+              <p class="card-text text-center" style="font-size: 50px;font-weight: 900;">50</p>
+            </div>
+          </div>
+        </a>
 
-        </tbody>
-    </table>
-    <button id="addLineItem" type="button" class="btn btn-primary">Add Line Item</button>
-
-    <hr />
-    <button id="clickSubmit" type="submit" class="btn btn-success">Submit</button>
-</form>
-<script src="~/lib/jquery/dist/jquery.min.js"></script>
-<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-<script type="text/javascript">
-    var lineItemCounter = 0;
-    console.log("script running")
-    $(document).ready(async function () {
-        var productCodeToNameMap = {};
-        var RefNo = '@Model.RefNo';
-
-        if(RefNo != "")
-        {
-            var testdetails = '@Model.TestDetails';
-            var selectedPlant = '@Model.SelectedPlant';
-            var selectedPurposesOfTesting = '@Model.SelectedPurposeofTesting';
-
-            console.log("selectedPurposesOfTesting ",selectedPurposesOfTesting)
-            
-            $(this).find('input[name="RefNo"]').val(RefNo);
-            $(this).find('textarea[name="TestDetails"]').val(testdetails);
-            $(this).find('select[name="Plant[0]"]').val(testdetails);
-            $(this).find('select[name="PurposesOfTesting[0]"]').val(selectedPurposesOfTesting);
-        }
+        <a href="#" class="col" style="text-decoration: none; color: black;">
+          <div class="card" style="background-color: #C6F4D6;">
+            <div class="card-body">
+              <h5 class="card-title text-center" style="color: #666;">Pending in Production
+              <p class="card-text text-center" style="font-size: 50px;font-weight: 900;">50</p>
+            </div>
+          </div>
+        </a>
 
 
+      </div>
+      
+</section>
 
-    @foreach (var product in Model.Products)
-    {
-        @:productCodeToNameMap["@product.ProductCode"] = "@product.ProductName";
-    }
-            // Populate line items from model
-    @if (Model.LineItems != null && Model.LineItems.Count > 0)
-    {
-        @:var lineItems = @Html.Raw(Json.Serialize(Model.LineItems));
-        @:lineItems.forEach(function (lineItem, index) {
-        @:var productOptions = Object.keys(productCodeToNameMap).map(code => `<option value="${code}" ${code === lineItem.productCode ? 'selected' : ''}>${code}</option>`).join('');
-        @:var productNameOptions = Object.keys(productCodeToNameMap).map(code => `<option value="${productCodeToNameMap[code]}" ${productCodeToNameMap[code] === lineItem.productName ? 'selected' : ''}>${productCodeToNameMap[code]}</option>`).join('');
-        @:var workcentreOptions = [@foreach (var workcentre in Model.Workcentres)
-        {
-            <text>'@workcentre',</text>
-        }];
-        @:workcentreOptions = workcentreOptions.map(workcentre => `<option value="${workcentre}" ${workcentre === lineItem.workcentre ? 'selected' : ''}>${workcentre}</option>`).join('');
-        @:$('<tr id="lineItemRow' + index + '"><td>' +
-        @:'<select name="LineItems[' + index + '].ProductCode" class="form-control product-code-select" required>' + productOptions + '</select>' +
-        @:'</td><td>' +
-        @:'<select name="LineItems[' + index + '].ProductName" class="form-control product-name-select" style="pointer-events: none;" required>' + productNameOptions + '</select>' +
-        @:'</td><td>' +
-        @:'<select name="LineItems[' + index + '].Workcentre" class="form-control" required>' + workcentreOptions + '</select>' +
-        @:'</td><td>' +
-        @:'<input type="number" min="1" value="' + lineItem.quantity + '" name="LineItems[' + index + '].Quantity" class="form-control" required/>' +
-        @:'</td><td>' +
-        @:'<input type="text" value="' + lineItem.remarks + '" name="LineItems[' + index + '].Remarks" class="form-control" required/>' +
-        @:'</td><td>' +
-        @:'<button type="button" class="btn btn-danger" onclick="removeLineItem(' + index + ');">Delete</button>' +
-        @:'</td></tr>').appendTo('#lineItemsTable tbody');
-        @:lineItemCounter++;
-        @:});
-    }
-            $('#lineItemsTable').on('change', 'select[name^="LineItems"][name$="ProductCode"]', function () {
-                console.log("on change")
-                var code = $(this).val();
-                $(this).closest('tr').find('select[name^="LineItems"][name$="ProductName"]').val(productCodeToNameMap[code]);
-            });
-
-        $('#addLineItem').click(function () {
-            var selectedProducts = {};
-            $('select[name^="LineItems"][name$="ProductCode"]').each(function () {
-                var code = $(this).val();
-                var name = $(this).closest('tr').find('select[name^="LineItems"][name$="ProductName"]').val();
-                selectedProducts[code] = name;
-            });
-
-            var allProductCodes = Object.keys(productCodeToNameMap);
-            var availableProductCodes = allProductCodes.filter(code => !(code in selectedProducts));
-
-            if (availableProductCodes.length === 0) {
-                alert("All product codes are already selected.");
-                return false;
-            }
-
-            var productOptions = availableProductCodes.map(code => `<option value="${code}">${code}</option>`).join('');
-            var productNameOptions = availableProductCodes.map(code => `<option value="${productCodeToNameMap[code]}" >${productCodeToNameMap[code]}</option>`).join('');
-
-            var availableWorkcentres = @Html.Raw(Json.Serialize(Model.Workcentres));
-            var workcentreOptions = '';
-            availableWorkcentres.forEach(function (workcentre) {
-                workcentreOptions += '<option value="' + workcentre + '">' + workcentre + '</option>';
-            });
-
-            $('<tr id="lineItemRow' + lineItemCounter + '"><td>' +
-                '<select name="LineItems[' + lineItemCounter + '].ProductCode" class="form-control product-code-select" required>' + productOptions + '</select>' +
-                '</td><td>' +
-                '<select name="LineItems[' + lineItemCounter + '].ProductName" class="form-control product-name-select" style="pointer-events: none;" required>' + productNameOptions + '</select>' +
-                '</td><td>' +
-                '<select name="LineItems[' + lineItemCounter + '].Workcentre" class="form-control" required>' + workcentreOptions + '</select>' +
-                '</td><td>' +
-                '<input type="number" min="1" value="1" name="LineItems[' + lineItemCounter + '].Quantity" class="form-control" required/>' +
-                '</td><td>' +
-                '<input type="text" name="LineItems[' + lineItemCounter + '].Remarks" class="form-control" required/>' +
-                '</td><td>' +
-                '<button type="button" class="btn btn-danger" onclick="removeLineItem(' + lineItemCounter + ');">Delete</button>' +
-                '</td></tr>').appendTo('#lineItemsTable tbody');
-            lineItemCounter++;
-            return false;
-        });
-    });
-
-    async function removeLineItem(index) {
-        await $('#lineItemRow' + index).remove();
-    }
-
-</script>

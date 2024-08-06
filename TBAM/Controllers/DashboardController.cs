@@ -21,8 +21,14 @@ namespace TBAM.Controllers
             _dataService = dataService;
         }
 
+
+        public IActionResult Index()
+        {
+            return View();
+        }
+
         [HttpGet]
-        public async Task<IActionResult> Index(string? RefNo)
+        public async Task<IActionResult> CreateTestBatch(string? RefNo)
         {
             if (HttpContext.Session.Get("userId") != null)
             {
@@ -102,7 +108,7 @@ namespace TBAM.Controllers
         {
             if (HttpContext.Session.Get("userId") != null)
             {
-                return RedirectToAction("Index", "Dashboard", new {RefNo});
+                return RedirectToAction("CreateTestBatch", "Dashboard", new {RefNo});
             }
             return RedirectToAction("Index", "Login");
         }

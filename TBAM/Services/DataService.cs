@@ -67,7 +67,7 @@ public class DataService
             PurposesOfTestingId = PurposesOfTestingId.FirstOrDefault().Id,
             PlantId = PlantId.FirstOrDefault().Id,
             TestDetails = model.TestDetails,
-            CreatedBy = 1,
+            CreatedBy = (int)userId,
             Status = "Initiator"
 
         };
@@ -96,7 +96,7 @@ public class DataService
                 Quantity = item.Quantity,
                 Workcentre = item.Workcentre,
                 Remarks = item.Remarks,
-                CreatedBy = 1,
+                CreatedBy = (int)userId,
             };
 
 
