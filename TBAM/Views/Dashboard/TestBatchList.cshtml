@@ -1,4 +1,4 @@
-@model TBAM.Models.TestFormViewModel
+@model TBAM.Models.TestBatchListModel
 
 @{
     ViewData["Title"] = "Test Batch List";
@@ -26,31 +26,73 @@
         <label for="TestDetails">Test Details</label>
         <textarea id="TestDetails" name="TestDetails" class="form-control" required>@Model.TestDetails</textarea>
     </div> *@
+    
     <table id="lineItemsTable" class="table table-bordered mt-3">
         <thead class="thead-light">
             <tr>
+                <th>Sr No.</th>
                 <th>Purpose of Testing</th>
                 <th>Plant</th>
+                <th>Status</th>
                 <th>Action</th>
             </tr>
         </thead>
         <tbody>
-
+@* 
                 <tr id="lineItemRow@i">
                     <td>
-                        <input type="text" name="Model.ProductCodes[0]" value="@Model.PurposesOfTesting[0]"
+                        <input type="text" name="Model.PurposesOfTesting" value="@Model.PurposesOfTesting"
                             class="form-control" disabled />
                     </td>
                    
                     <td>
-                        <input type="text" name="Model.Plants[0]" value="@Model.Plants[0]"
+                        <input type="text" name="Model.Plant" value="@Model.Plant"
+                            class="form-control" disabled />
+                    </td>
+                                        <td>
+                        <input type="text" name="Model.Status" value="@Model.Status"
                             class="form-control" disabled />
                     </td>
                     <td>
-                        <button id="edit" type="button" class="btn btn-primary">Edit Test Batch</button>
-
+                        <button id="edit" asp-action="EditTestBatch" type="button" class="btn btn-primary">Edit Test Batch</button>
+                        <input type="hidden" value="@Model.Id">
                     </td>
                 </tr>
-        
+         *@
         </tbody>
     </table>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script type="text/javascript">
+
+   $(document).ready(async function () {
+    var TestBatchListCount = 1;
+    var ListOfBatch = [];
+
+    @for (int i = 0; i < Model.ListOfBatch.Count; i++)
+    {
+        @:ListOfBatch[@i] = @Json.Serialize(Model.ListOfBatch[i]);
+    }
+
+    console.log("ListOfBatch.length ", ListOfBatch.length)
+
+    for (var i = 0; i < ListOfBatch.length; i++) {
+        console.log("ListOfBatch[i].RefNo ",JSON.stringify(ListOfBatch[i]))
+            var editUrl = '@Url.Action("EditTestBatch", "Dashboard")';
+            $('<tr id="lineItemRow' + i + '"><td>' +
+                '  <label for="html">'+TestBatchListCount+'</label><br>' +
+                '</td><td>' +
+                '<input type="text" name="Model.PurposesOfTesting" value="' + ListOfBatch[i].purposesOfTesting + '" class="form-control" disabled />  ' +
+                '</td><td>' +
+                '<input type="text" name="Model.Plant" value="' + ListOfBatch[i].plant + '" class="form-control" disabled />  ' +
+                '</td><td>' +
+                '<input type="text" name="Model.Status" value="' + ListOfBatch[i].status + '" class="form-control" disabled />  ' +
+                '</td><td>' +
+                '<input type="hidden" value="' + ListOfBatch[i].id + '"/>' +
+                '<a href="' + editUrl + '?RefNo=' + ListOfBatch[i].refNo + '" class="btn btn-danger">Edit</a>' +
+                '</td></tr>').appendTo('#lineItemsTable tbody');
+            TestBatchListCount++;
+        }
+});
+</script>

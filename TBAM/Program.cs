@@ -13,6 +13,8 @@ var config = provider.GetRequiredService<IConfiguration>();
 
 builder.Services.AddDbContext<ApplicationDbContext>(item => item.UseNpgsql(config.GetConnectionString("conn")));
 
+builder.Services.AddTransient<DataService>();
+
 builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromMinutes(30); // adjust the timeout as needed

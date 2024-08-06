@@ -9,6 +9,7 @@
 
 <form asp-action="SubmitTestForm" method="post">
     <div class="form-group">
+        <input type="hidden" name="RefNo" value="TBAM/000001" class="form-control" required/>
         <label for="PurposeOfTesting">Purpose of Testing</label>
         <select id="PurposeOfTesting" name="PurposesOfTesting[0]" class="form-control">
             @foreach (var purpose in Model.PurposesOfTesting)
@@ -60,15 +61,50 @@
     console.log("script running")
     $(document).ready(async function () {
         var productCodeToNameMap = {};
+        var RefNo = '@Model.RefNo';
+        var testdetails = '@Model.TestDetails';
+        
+        $(this).find('input[name="RefNo"]').val(RefNo);
+        $(this).find('textarea[name="TestDetails"]').val(testdetails);
+
+
     @foreach (var product in Model.Products)
     {
         @:productCodeToNameMap["@product.ProductCode"] = "@product.ProductName";
     }
-        $('#lineItemsTable').on('change', 'select[name^="LineItems"][name$="ProductCode"]', function () {
-            console.log("on change")
-            var code = $(this).val();
-            $(this).closest('tr').find('select[name^="LineItems"][name$="ProductName"]').val(productCodeToNameMap[code]);
-        });
+            // Populate line items from model
+    @if (Model.LineItems != null && Model.LineItems.Count > 0)
+    {
+        @:var lineItems = @Html.Raw(Json.Serialize(Model.LineItems));
+        @:lineItems.forEach(function (lineItem, index) {
+        @:var productOptions = Object.keys(productCodeToNameMap).map(code => `<option value="${code}" ${code === lineItem.productCode ? 'selected' : ''}>${code}</option>`).join('');
+        @:var productNameOptions = Object.keys(productCodeToNameMap).map(code => `<option value="${productCodeToNameMap[code]}" ${productCodeToNameMap[code] === lineItem.productName ? 'selected' : ''}>${productCodeToNameMap[code]}</option>`).join('');
+        @:var workcentreOptions = [@foreach (var workcentre in Model.Workcentres)
+        {
+            <text>'@workcentre',</text>
+        }];
+        @:workcentreOptions = workcentreOptions.map(workcentre => `<option value="${workcentre}" ${workcentre === lineItem.workcentre ? 'selected' : ''}>${workcentre}</option>`).join('');
+        @:$('<tr id="lineItemRow' + index + '"><td>' +
+        @:'<select name="LineItems[' + index + '].ProductCode" class="form-control product-code-select" required>' + productOptions + '</select>' +
+        @:'</td><td>' +
+        @:'<select name="LineItems[' + index + '].ProductName" class="form-control product-name-select" style="pointer-events: none;" required>' + productNameOptions + '</select>' +
+        @:'</td><td>' +
+        @:'<select name="LineItems[' + index + '].Workcentre" class="form-control" required>' + workcentreOptions + '</select>' +
+        @:'</td><td>' +
+        @:'<input type="number" min="1" value="' + lineItem.quantity + '" name="LineItems[' + index + '].Quantity" class="form-control" required/>' +
+        @:'</td><td>' +
+        @:'<input type="text" value="' + lineItem.remarks + '" name="LineItems[' + index + '].Remarks" class="form-control" required/>' +
+        @:'</td><td>' +
+        @:'<button type="button" class="btn btn-danger" onclick="removeLineItem(' + index + ');">Delete</button>' +
+        @:'</td></tr>').appendTo('#lineItemsTable tbody');
+        @:lineItemCounter++;
+        @:});
+    }
+            $('#lineItemsTable').on('change', 'select[name^="LineItems"][name$="ProductCode"]', function () {
+                console.log("on change")
+                var code = $(this).val();
+                $(this).closest('tr').find('select[name^="LineItems"][name$="ProductName"]').val(productCodeToNameMap[code]);
+            });
 
         $('#addLineItem').click(function () {
             var selectedProducts = {};

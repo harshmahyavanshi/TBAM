@@ -12,6 +12,8 @@ public class TestFormViewModel
     public required List<int> Plants { get; set; }
 
     public required string TestDetails { get; set; }
+    public string RefNo {get; set;}
+     
 
 }
 

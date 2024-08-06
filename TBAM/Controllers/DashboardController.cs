@@ -8,50 +8,72 @@ namespace TBAM.Controllers
 {
     public class DashboardController : Controller
     {
+        private readonly DataService _dataService;
         private readonly ILogger<DashboardController> _logger;
 
         private readonly ApplicationDbContext _context;
 
 
-        public DashboardController(ILogger<DashboardController> logger, ApplicationDbContext context)
+        public DashboardController(ILogger<DashboardController> logger, ApplicationDbContext context, DataService dataService)
         {
             _logger = logger;
             _context = context;
+            _dataService = dataService;
         }
 
         [HttpGet]
-        public IActionResult Index()
+        public async Task<IActionResult> Index(string? RefNo)
         {
             if (HttpContext.Session.Get("userId") != null)
             {
-                var model = new TestFormViewModel
+                if (RefNo == null)
                 {
-                    LineItems = new List<LineItem>(),
-                    Products = _context.ProductCodes.Select(p => new Product { ProductCode = p.ProductCode, ProductName = p.ProductName }).ToList(),
-                    Workcentres = new List<string> { "Workcentre1", "Workcentre2" /* add more workcentres here */ },
-                    PurposesOfTesting = _context.PurposesOfTesting.Select(p => p.Description).ToList(),//new List<string> { "MDR", "USFDA", "In-house validation", "Regulatory submission", "Audit query", "Alternate vendor", "Other" },
-                    Plants = _context.Plants.Select(p => p.PlantId).ToList(),
-                    TestDetails = ""
-                };
-                return View(model);
+                    var model = new TestFormViewModel
+                    {
+                        LineItems = new List<LineItem>(),
+                        Products = _context.ProductMaster.Select(p => new Product { ProductCode = p.ProductCode, ProductName = p.ProductName }).ToList(),
+                        Workcentres = new List<string> { "Workcentre1", "Workcentre2" /* add more workcentres here */ },
+                        PurposesOfTesting = _context.PurposesOfTesting.Select(p => p.Description).ToList(),//new List<string> { "MDR", "USFDA", "In-house validation", "Regulatory submission", "Audit query", "Alternate vendor", "Other" },
+                        Plants = _context.Plants.Select(p => p.PlantId).ToList(),
+                        TestDetails = ""
+                    };
+                    return View(model);
+                }
+                else
+                {
+                    var userId = HttpContext.Session.GetInt32("userId");
+                    var lineItemList = await _dataService.GetTestBatchItemList(userId,RefNo);
+                    //var testDetails =  _context.TestBatch.Select(p=>p).Where(p=>p.Refno == RefNo).FirstOrDefault().TestDetails;
+                    var testBatch = await _dataService.GetTestBatch(userId,RefNo);
+                    var model = new TestFormViewModel
+                    {
+                        LineItems = lineItemList,
+                        Products = _context.ProductMaster.Select(p => new Product { ProductCode = p.ProductCode, ProductName = p.ProductName }).ToList(),
+                        Workcentres = new List<string> { "Workcentre1", "Workcentre2" /* add more workcentres here */ },
+                        PurposesOfTesting = _context.PurposesOfTesting.Select(p => p.Description).ToList(),//new List<string> { "MDR", "USFDA", "In-house validation", "Regulatory submission", "Audit query", "Alternate vendor", "Other" },
+                        Plants = _context.Plants.Select(p => p.PlantId).ToList(),
+                        TestDetails = testBatch.TestDetails,
+                        RefNo = RefNo,
+                    };
+                    return View(model);
+                }
             }
             return RedirectToAction("Index", "Login");
         }
 
         [HttpPost]
-        public IActionResult SubmitTestForm(TestFormViewModel model)
+        public async Task<IActionResult> SubmitTestForm(TestFormViewModel model)
         {
-            // if (ModelState.IsValid)
-            // {
-                // Process the form data
-                // Save to database or perform other actions
+            // Redirect to a success page or return a success message
+            var userId = HttpContext.Session.GetInt32("userId");
+            var isCreatedSuccessfully = await _dataService.CreateTestBatch(model, userId);
 
-                // Redirect to a success page or return a success message
-                return RedirectToAction("TestBatchList","Dashboard", model);
-
-            // }
-            // var message = model.LineItems == null ? "No LineItems" : "" + model.TestDetails == null ? "No Test Details entered." : "";
-            // return View("Index", model);
+            if (isCreatedSuccessfully == true)
+            {
+                return RedirectToAction("TestBatchList", "Dashboard");
+            }
+            
+            return View("Index", model);
         }
 
         public IActionResult Success(TestFormViewModel model)
@@ -59,34 +81,26 @@ namespace TBAM.Controllers
             return View(model);
         }
 
-        public IActionResult TestBatchList(TestFormViewModel model)
+        public async Task<IActionResult> TestBatchList()
         {
-            //  var model = new TestFormViewModel
-            // {
-            //     LineItems = new List<LineItem>{new LineItem { BatchNumber = "Batch1", ProductCode = "Code1" , Quantity=1, ProductName="Product name", Remarks="Remarks", Workcentre="Workcentre 1"} },
-            //     ProductCodes = new List<string> { "Code1"},
-            //     Workcentres = new List<string> { "Workcentre1"},
-            //     PurposesOfTesting = new List<string> { "MDR" },
-            //     Plants = new List<string> { "Plant1"},
-            //     TestDetails = "Test"
-            // };
+            if (HttpContext.Session.Get("userId") != null)
+            {
+                var userId = HttpContext.Session.GetInt32("userId");
+                var model = await _dataService.GetTestBatchList(userId);
 
-            // var model =
-            //     new TestBatchListModel 
-            //     {
-            //         ListOfBatch =
-            //         {
-            //             new TestBatchModel
-            //             {
-            //                 Id=1,
-            //                 PurposesOfTesting = "Other",
-            //                 Plant=1200,
-            //                 TestDetails="Test",
-            //                 Status="Initiator"
-            //             }
-            //         }
-            //     };
-            return View(model);
+                return View(model);
+            }
+            return RedirectToAction("Index", "Login");
+        }
+
+        [HttpGet]
+        public IActionResult EditTestBatch(string RefNo)
+        {
+            if (HttpContext.Session.Get("userId") != null)
+            {
+                return RedirectToAction("Index", "Dashboard", new {RefNo});
+            }
+            return RedirectToAction("Index", "Login");
         }
 
         //Logout

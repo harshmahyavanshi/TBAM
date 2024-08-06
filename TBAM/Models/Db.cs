@@ -75,9 +75,22 @@ namespace TBAM.Models
         public required int PlantId { get; set; }
 
         public required string Description { get; set; }
+
+        [ForeignKey("User")]
+        public int? CreatedBy { get; set; }
+        public DateTime? CreatedAt { get; set; }
+
+        [ForeignKey("User")]
+        public int? ModifiedBy { get; set; }
+        public DateTime? ModifiedAt { get; set; }
+
+        [ForeignKey("User")]
+        public int? DeletedBy { get; set; }
+        public DateTime? DeletedAt { get; set; }
+        public Boolean? IsDeleted { get; set; }
     }
 
-    public class ProductCodes
+    public class ProductMaster
     {
         [Key]
         public int Id { get; set; }
@@ -88,6 +101,19 @@ namespace TBAM.Models
         public required string ProductCode { get; set; }
 
         public required string ProductName { get; set; }
+
+        [ForeignKey("User")]
+        public int? CreatedBy { get; set; }
+        public DateTime? CreatedAt { get; set; }
+
+        [ForeignKey("User")]
+        public int? ModifiedBy { get; set; }
+        public DateTime? ModifiedAt { get; set; }
+
+        [ForeignKey("User")]
+        public int? DeletedBy { get; set; }
+        public DateTime? DeletedAt { get; set; }
+        public Boolean? IsDeleted { get; set; }
 
 
     }
@@ -100,6 +126,19 @@ namespace TBAM.Models
         public int PlantId { get; set; }
 
         public required string Description { get; set; }
+
+        [ForeignKey("User")]
+        public int? CreatedBy { get; set; }
+        public DateTime? CreatedAt { get; set; }
+
+        [ForeignKey("User")]
+        public int? ModifiedBy { get; set; }
+        public DateTime? ModifiedAt { get; set; }
+
+        [ForeignKey("User")]
+        public int? DeletedBy { get; set; }
+        public DateTime? DeletedAt { get; set; }
+        public Boolean? IsDeleted { get; set; }
     }
     public class PurposesOfTesting
     {
@@ -108,12 +147,26 @@ namespace TBAM.Models
 
         public required string Description { get; set; }
 
+        [ForeignKey("User")]
+        public int? CreatedBy { get; set; }
+        public DateTime? CreatedAt { get; set; }
+
+        [ForeignKey("User")]
+        public int? ModifiedBy { get; set; }
+        public DateTime? ModifiedAt { get; set; }
+
+        [ForeignKey("User")]
+        public int? DeletedBy { get; set; }
+        public DateTime? DeletedAt { get; set; }
+        public Boolean? IsDeleted { get; set; }
+
     }
 
     public class TestBatch
     {
         [Key]
         public int Id { get; set; }
+        public string Refno { get; set; }
 
         [ForeignKey("PurposesOfTesting")]
         public required int PurposesOfTestingId { get; set; }
@@ -125,7 +178,7 @@ namespace TBAM.Models
 
         [ForeignKey("User")]
         public required int CreatedBy { get; set; }
-        public required DateTime CreatedAt { get; set; }
+        public DateTime CreatedAt { get; set; }
 
         [ForeignKey("User")]
         public int? ModifiedBy { get; set; }
@@ -148,6 +201,7 @@ namespace TBAM.Models
     {
         [Key]
         public int Id { get; set; }
+        public string Refno { get; set; }
 
         [ForeignKey("TestBatch")]
         public required int TestBatchId { get; set; }
@@ -168,7 +222,7 @@ namespace TBAM.Models
 
         [ForeignKey("User")]
         public required int CreatedBy { get; set; }
-        public required DateTime CreatedAt { get; set; }
+        public DateTime CreatedAt { get; set; }
 
         [ForeignKey("User")]
         public int? ModifiedBy { get; set; }
