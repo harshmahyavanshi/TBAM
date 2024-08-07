@@ -262,4 +262,16 @@ public class DataService
         return listOfTestBatchListCount;
     }
 
+    public async Task<bool> GetEditPermission(int? userRoleId, string RefNo){
+        var role = await _context.Role.Where(r => r.IsDeleted == false && r.Id == userRoleId).ToListAsync();
+
+        var status = await _context.TestBatch.Select(p=>p).Where(p=>p.IsDeleted==false && p.Refno == RefNo && p.Status.Equals(role.FirstOrDefault().RoleName)).ToListAsync();
+
+        if(status.Count != 0)
+        {
+            return true;
+        }
+
+        return false;
+    }
 }

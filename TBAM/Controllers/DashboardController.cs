@@ -131,11 +131,18 @@ namespace TBAM.Controllers
         }
 
         [HttpGet]
-        public IActionResult EditTestBatch(string RefNo)
+        public async Task<IActionResult> EditTestBatch(string RefNo)
         {
             if (HttpContext.Session.Get("userId") != null)
             {
-                return RedirectToAction("CreateTestBatch", "Dashboard", new {RefNo});
+                var userRoleId = HttpContext.Session.GetInt32("userRole");
+
+                var isEditAllowed = await _dataService.GetEditPermission(userRoleId,RefNo);
+
+                if(isEditAllowed)
+                    return RedirectToAction("CreateTestBatch", "Dashboard", new {RefNo});
+                else
+                    return RedirectToAction("TestBatchList", "Dashboard");
             }
             return RedirectToAction("Index", "Login");
         }
