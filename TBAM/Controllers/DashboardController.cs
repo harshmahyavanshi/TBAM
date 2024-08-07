@@ -22,9 +22,36 @@ namespace TBAM.Controllers
         }
 
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var listOfBatchCount = await _dataService.GetDashboardCounts();
+
+            var dashboardCounts = new DashboardViewModel();
+
+            foreach(var batchCount in listOfBatchCount)
+            {
+
+                switch(batchCount.Filter)
+                {
+                    case "Initiator":
+                    dashboardCounts.TotalCreated = batchCount.Count;
+                    break;
+
+                    case "QC":
+                    dashboardCounts.PendingInQc = batchCount.Count;
+                    break;
+                    
+                    case "Costing":
+                    dashboardCounts.PendingInAccounts = batchCount.Count;
+                    break;
+                    
+                    case "Manufacturing Head":
+                    dashboardCounts.PendingInProduction = batchCount.Count;
+                    break;
+                }
+            }
+            
+            return View(dashboardCounts);
         }
 
         [HttpGet]

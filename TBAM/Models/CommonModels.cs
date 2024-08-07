@@ -13,7 +13,9 @@ namespace TBAM.Models
 
     public class TestBatchListModel
     {
+        public string Filter {get; set;}
         public List<TestBatchModel> ListOfBatch { get; set; }
+        public int Count {get; set;}
     }
     public class TestBatchModel
     {

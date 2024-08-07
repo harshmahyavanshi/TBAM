@@ -44,7 +44,7 @@ namespace TBAM.Controllers
                     var email = data.FirstOrDefault().Email;
                     HttpContext.Session.SetString(fullName, "FullName");
                     HttpContext.Session.SetString(email, "Email");
-                    HttpContext.Session.SetInt32("userRole", userRole.FirstOrDefault().Id);
+                    HttpContext.Session.SetInt32("userRole", userRole.FirstOrDefault().Id); //Change Id to RoleId.
                     HttpContext.Session.SetInt32("userId", data.FirstOrDefault().Id);
 
                     return RedirectToAction("Index", "Dashboard");

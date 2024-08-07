@@ -35,4 +35,12 @@ public class LineItem
     public required string Remarks { get; set; }
 }
 
+public class DashboardViewModel
+{
+    public int TotalCreated { get; set; }
+    public int PendingInQc { get; set; }
+    public int PendingInAccounts { get; set; }
+    public int PendingInProduction { get; set; }
+}
+
 }

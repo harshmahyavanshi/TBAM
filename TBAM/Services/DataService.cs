@@ -68,7 +68,7 @@ public class DataService
             PlantId = PlantId.FirstOrDefault().Id,
             TestDetails = model.TestDetails,
             CreatedBy = (int)userId,
-            Status = "Initiator"
+            Status = "QC"
 
         };
 
@@ -117,7 +117,7 @@ public class DataService
         return isCreatedSuccessfully;
     }
 
-    public async Task<TestBatchListModel> GetTestBatchList(int? userId)
+    public async Task<TestBatchListModel> GetTestBatchList(int? userId, string? Filter=null)
     {
         var dataList = _context.TestBatch.Select(p => p).Where(p => p.CreatedBy == userId && p.IsDeleted == false).ToList();
 
@@ -241,4 +241,25 @@ public class DataService
 
         return true;
     }
+
+    public async Task<List<TestBatchListModel>> GetDashboardCounts(){
+
+        var listOfTestBatchListCount = new List<TestBatchListModel>() ;
+
+        var roles = await _context.Role.Where(r => r.IsDeleted == false).ToListAsync();
+
+        foreach(var role in roles)
+        {
+            var count = await _context.TestBatch.CountAsync(p => p.IsDeleted == false && p.Status.Equals(role.RoleName.ToString()));
+            var testBatchList = new TestBatchListModel {
+                Filter = role.RoleName,
+                Count = count
+            };
+            listOfTestBatchListCount.Add(testBatchList);
+
+        }
+
+        return listOfTestBatchListCount;
+    }
+
 }

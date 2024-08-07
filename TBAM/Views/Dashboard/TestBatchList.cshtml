@@ -7,26 +7,6 @@
 }
 
 <h2>@ViewData["Title"]</h2>
-
-     @* <div class="form-group">
-        <label for="PurposeOfTesting">Purpose of Testing</label>
-        <select id="PurposeOfTesting" name="PurposesOfTesting[0]" class="form-control">
-            
-                <option value="@Model.PurposesOfTesting[0]">@Model.PurposesOfTesting[0]</option>
-            
-        </select>
-    </div>
-    <div class="form-group">
-        <label for="Plant">Plant</label>
-        <select id="Plant" name="Plants[0]" class="form-control">
-                <option value="@Model.Plants[0]">@Model.Plants[0]</option>
-        </select>
-    </div>
-    <div class="form-group">
-        <label for="TestDetails">Test Details</label>
-        <textarea id="TestDetails" name="TestDetails" class="form-control" required>@Model.TestDetails</textarea>
-    </div> *@
-    
     <table id="lineItemsTable" class="table table-bordered mt-3">
         <thead class="thead-light">
             <tr>
@@ -38,31 +18,10 @@
             </tr>
         </thead>
         <tbody>
-@* 
-                <tr id="lineItemRow@i">
-                    <td>
-                        <input type="text" name="Model.PurposesOfTesting" value="@Model.PurposesOfTesting"
-                            class="form-control" disabled />
-                    </td>
-                   
-                    <td>
-                        <input type="text" name="Model.Plant" value="@Model.Plant"
-                            class="form-control" disabled />
-                    </td>
-                                        <td>
-                        <input type="text" name="Model.Status" value="@Model.Status"
-                            class="form-control" disabled />
-                    </td>
-                    <td>
-                        <button id="edit" asp-action="EditTestBatch" type="button" class="btn btn-primary">Edit Test Batch</button>
-                        <input type="hidden" value="@Model.Id">
-                    </td>
-                </tr>
-         *@
         </tbody>
     </table>
 
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 <script type="text/javascript">
 
@@ -77,22 +36,25 @@
 
     console.log("ListOfBatch.length ", ListOfBatch.length)
 
-    for (var i = 0; i < ListOfBatch.length; i++) {
+    for (var i = 0; i < ListOfBatch.length; i++) 
+    {
         console.log("ListOfBatch[i].RefNo ",JSON.stringify(ListOfBatch[i]))
-            var editUrl = '@Url.Action("EditTestBatch", "Dashboard")';
-            $('<tr id="lineItemRow' + i + '"><td>' +
-                '  <label for="html">'+TestBatchListCount+'</label><br>' +
-                '</td><td>' +
-                '<input type="text" name="Model.PurposesOfTesting" value="' + ListOfBatch[i].purposesOfTesting + '" class="form-control" disabled />  ' +
-                '</td><td>' +
-                '<input type="text" name="Model.Plant" value="' + ListOfBatch[i].plant + '" class="form-control" disabled />  ' +
-                '</td><td>' +
-                '<input type="text" name="Model.Status" value="' + ListOfBatch[i].status + '" class="form-control" disabled />  ' +
-                '</td><td>' +
-                '<input type="hidden" value="' + ListOfBatch[i].id + '"/>' +
-                '<a href="' + editUrl + '?RefNo=' + ListOfBatch[i].refNo + '" class="btn btn-danger">Edit</a>' +
-                '</td></tr>').appendTo('#lineItemsTable tbody');
-            TestBatchListCount++;
-        }
+        var editUrl = '@Url.Action("EditTestBatch", "Dashboard")';
+        $('<tr id="lineItemRow' + i + '"><td>' +
+        '  <label for="html">'+TestBatchListCount+'</label><br>' +
+        '</td><td>' +
+        '<input type="text" name="Model.PurposesOfTesting" value="' + ListOfBatch[i].purposesOfTesting + '" class="form-control" disabled />  ' +
+        '</td><td>' +
+        '<input type="text" name="Model.Plant" value="' + ListOfBatch[i].plant + '" class="form-control" disabled />  ' +
+        '</td><td>' +
+        '<input type="text" name="Model.Status" value="' + ListOfBatch[i].status + '" class="form-control" disabled />  ' +
+        '</td><td>' +
+        '<input type="hidden" value="' + ListOfBatch[i].id + '"/>' +
+        (ListOfBatch[i].status == "Initiator" ? 
+            '<a href="' + editUrl + '?RefNo=' + ListOfBatch[i].refNo + '" class="btn btn-danger">Edit</a>' : 
+            '<a href="#" class="btn btn-danger disabled" >Edit</a>') +
+        '</td></tr>').appendTo('#lineItemsTable tbody');
+        TestBatchListCount++;
+    }
 });
 </script>
