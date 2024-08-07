@@ -162,6 +162,19 @@
 
     async function removeLineItem(index) {
         await $('#lineItemRow' + index).remove();
+
+        // Re-index the remaining items
+    $('#lineItemsTable tbody tr').each(function (newIndex) {
+        $(this).attr('id', 'lineItemRow' + newIndex);
+        $(this).find('select[name^="LineItems"][name$="ProductCode"]').attr('name', 'LineItems[' + newIndex + '].ProductCode');
+        $(this).find('select[name^="LineItems"][name$="ProductName"]').attr('name', 'LineItems[' + newIndex + '].ProductName');
+        $(this).find('select[name^="LineItems"][name$="Workcentre"]').attr('name', 'LineItems[' + newIndex + '].Workcentre');
+        $(this).find('input[name^="LineItems"][name$="Quantity"]').attr('name', 'LineItems[' + newIndex + '].Quantity');
+        $(this).find('input[name^="LineItems"][name$="Remarks"]').attr('name', 'LineItems[' + newIndex + '].Remarks');
+        $(this).find('button.btn-danger').attr('onclick', 'removeLineItem(' + newIndex + ');');
+    });
+
+    lineItemCounter = $('#lineItemsTable tbody tr').length;
     }
 
 </script>
