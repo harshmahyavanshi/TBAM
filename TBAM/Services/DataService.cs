@@ -197,27 +197,25 @@ public class DataService
 
         var isTestBatchItemUpdated = await UpdateTestBatchItem(RefNo, userId);
 
-        if (isTestBatchItemUpdated)
+
+        var dataList = _context.TestBatch.Select(p => p).Where(p => p.Refno == RefNo && p.IsDeleted == false).ToList();
+        var utcDateTimeValue = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Utc);
+
+        foreach (var testbatch in dataList)
         {
-
-            var dataList = _context.TestBatch.Select(p => p).Where(p => p.Refno == RefNo && p.IsDeleted == false).ToList();
-            var utcDateTimeValue = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Utc);
-
-            foreach (var testbatch in dataList)
-            {
-                testbatch.IsDeleted = true;
-                testbatch.DeletedBy = userId;
-                testbatch.DeletedAt = utcDateTimeValue;
+            testbatch.IsDeleted = true;
+            testbatch.DeletedBy = userId;
+            testbatch.DeletedAt = utcDateTimeValue;
 
 
-                _context.TestBatch.Update(testbatch);
-            }
-
-            await _context.SaveChangesAsync();
-
+            _context.TestBatch.Update(testbatch);
         }
 
-        return false;
+        await _context.SaveChangesAsync();
+
+        
+
+        return true;
     }
 
     public async Task<bool> UpdateTestBatchItem(string RefNo, int? userId)
