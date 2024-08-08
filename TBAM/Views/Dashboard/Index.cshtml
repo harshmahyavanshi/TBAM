@@ -3,11 +3,13 @@
 @{
     ViewData["Title"] = "Dashboard";
     Layout = "_Layout";
+    string fullName = (string)Context.Session.GetString("FullName");
+
 }
 
 <section class="container p-3">
 
-      <div class="card-text text-center p-3 line" style="font-size: 20px;font-weight: 500;text-decoration: underline;">Welcome! </div>
+      <div class="card-text text-center p-3 line" style="font-size: 20px;font-weight: 500;text-decoration: underline;">Welcome! @fullName</div>
       <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-4">
     
     

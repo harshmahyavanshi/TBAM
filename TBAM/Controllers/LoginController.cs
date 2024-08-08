@@ -42,8 +42,8 @@ namespace TBAM.Controllers
                     // Session["idUser"] = data.FirstOrDefault().idUser;
                     var fullName = data.FirstOrDefault().FirstName +" "+ data.FirstOrDefault().LastName;
                     var email = data.FirstOrDefault().Email;
-                    HttpContext.Session.SetString(fullName, "FullName");
-                    HttpContext.Session.SetString(email, "Email");
+                    HttpContext.Session.SetString("FullName",fullName);
+                    HttpContext.Session.SetString("Email",email);
                     HttpContext.Session.SetInt32("userRole", userRole.FirstOrDefault().RoleId); //Change Id to RoleId.
                     HttpContext.Session.SetInt32("userId", data.FirstOrDefault().Id);
 
