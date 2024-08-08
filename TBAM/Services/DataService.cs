@@ -120,9 +120,11 @@ public class DataService
 
     public async Task<TestBatchListModel> GetTestBatchList(int? userId, string? Filter = null)
     {
-        var dataList = Filter == null ? await _context.TestBatch.Select(p => p).Where(p => p.CreatedBy == userId && p.IsDeleted == false).ToListAsync() :
-                                        await _context.TestBatch.Select(p => p).Where(p => p.CreatedBy == userId && p.IsDeleted == false && p.Status.Equals(Filter)).ToListAsync();
+        // var dataList = Filter == null ? await _context.TestBatch.Select(p => p).Where(p => p.CreatedBy == userId && p.IsDeleted == false).ToListAsync() :
+        //                                 await _context.TestBatch.Select(p => p).Where(p => p.CreatedBy == userId && p.IsDeleted == false && p.Status.Equals(Filter)).ToListAsync();
 
+        var dataList = Filter == null ? await _context.TestBatch.Select(p => p).Where(p => p.IsDeleted == false).ToListAsync() :
+                                        await _context.TestBatch.Select(p => p).Where(p => p.IsDeleted == false && p.Status.Equals(Filter)).ToListAsync();
         var listOfBatch = new List<TestBatchModel>();
         // var purposeOfTesting = "Purpose of testing 1";
         // var plant = 2100;
