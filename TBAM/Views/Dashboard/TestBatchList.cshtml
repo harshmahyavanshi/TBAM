@@ -3,46 +3,73 @@
 @{
     ViewData["Title"] = "Test Batch List";
     Layout = "_Layout";
-
 }
 
-<h2>@ViewData["Title"]</h2>
+<h2 class="text-center">@ViewData["Title"]</h2>
+
 @if (@TempData["Message"] != null)
 {
-    <div class="alert alert-warning">
-    @TempData["Message"]
-</div>
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        @TempData["Message"]
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
 }
 
-<table id="lineItemsTable" class="table table-bordered mt-3">
-    <thead class="thead-light">
+<table id="lineItemsTable" class="table table-striped table-bordered table-hover mt-3">
+    <thead class="thead-dark">
         <tr>
-            <th>Sr No.</th>
-            <th>Ref No.</th>
-            <th>Purpose of Testing</th>
-            <th>Plant</th>
-            <th>Status</th>
-            <th>Action</th>
+            <th scope="col">Sr No.</th>
+            <th scope="col">Ref No.</th>
+            <th scope="col">Purpose of Testing</th>
+            <th scope="col">Plant</th>
+            <th scope="col">Status</th>
+            <th scope="col">Action</th>
         </tr>
     </thead>
     <tbody>
     </tbody>
 </table>
 
+<!-- Modal -->
+<div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmationModalLabel">Confirmation</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                @using (Html.BeginForm("ConfirmSendForApproval", "Dashboard", FormMethod.Post))
+                {
+                    <input type="hidden" id="refNo" name="RefNo" />
+                    <div class="alert alert-warning">
+                        Are you sure you want to send this batch for approval?
+                    </div>
+                    <button type="submit" class="btn btn-primary">Yes, send for approval</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">No, cancel</button>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 <script type="text/javascript">
-
     $(document).ready(async function () {
         var TestBatchListCount = 1;
         var ListOfBatch = [];
 
-    @for (int i = 0; i < Model.ListOfBatch.Count; i++)
-    {
-        @:ListOfBatch[@i] = @Json.Serialize(Model.ListOfBatch[i]);
-    }
+        @for (int i = 0; i < Model.ListOfBatch.Count; i++)
+        {
+            @:ListOfBatch[@i] = @Json.Serialize(Model.ListOfBatch[i]);
+        }
 
-            console.log("ListOfBatch.length ", ListOfBatch.length)
+        console.log("ListOfBatch.length ", ListOfBatch.length)
 
         for (var i = 0; i < ListOfBatch.length; i++) {
             console.log("ListOfBatch[i].RefNo ", JSON.stringify(ListOfBatch[i]))
@@ -52,31 +79,40 @@
             $('<tr id="lineItemRow' + i + '"><td>' +
                 '  <label for="html">' + TestBatchListCount + '</label><br>' +
                 '</td><td>' +
-                '<input type="text" name="Model.PurposesOfTesting" value="' + ListOfBatch[i].refNo + '" class="form-control" disabled />  ' +
+                '<input type="text" name="Model.PurposesOfTesting" value="' + ListOfBatch[i].refNo + '" class="form-control-plaintext" readonly />  ' +
                 '</td><td>' +
-                '<input type="text" name="Model.PurposesOfTesting" value="' + ListOfBatch[i].purposesOfTesting + '" class="form-control" disabled />  ' +
+                '<input type="text" name="Model.PurposesOfTesting" value="' + ListOfBatch[i].purposesOfTesting + '" class="form-control-plaintext" readonly />  ' +
                 '</td><td>' +
-                '<input type="text" name="Model.Plant" value="' + ListOfBatch[i].plant + '" class="form-control" disabled />  ' +
+                '<input type="text" name="Model.Plant" value="' + ListOfBatch[i].plant + '" class="form-control-plaintext" readonly />  ' +
                 '</td><td>' +
-                '<input type="text" name="Model.Status" value="' + ListOfBatch[i].status + '" class="form-control" disabled />  ' +
+                '<input type="text" name="Model.Status" value="' + ListOfBatch[i].status + '" class="form-control-plaintext" readonly />  ' +
                 '</td><td>' +
                 '<input type="hidden" value="' + ListOfBatch[i].id + '"/>' +
                 (ListOfBatch[i].status == "Initiator" ?
-                    '<a href="' + editUrl + '?RefNo=' + ListOfBatch[i].refNo + '" class="btn btn-danger">Edit</a>' :
-                    '<a href="#" class="btn btn-danger disabled" >Edit</a>') +
+                    '<a href="' + editUrl + '?RefNo=' + ListOfBatch[i].refNo + '" class="btn btn-sm btn-primary">Edit</a>' :
+                    '<a href="#" class="btn btn-sm btn-secondary disabled" >Edit</a>') +
                 '&nbsp;&nbsp;' +
                 (ListOfBatch[i].status == "Initiator" ?
-                    '<a href="' + sendForApprovalUrl + '?RefNo=' + ListOfBatch[i].refNo + '" class="btn btn-warning">' +
+                    '<a href="' + sendForApprovalUrl + '?RefNo=' + ListOfBatch[i].refNo + '" class="btn btn-sm btn-warning">' +
                     '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check" viewBox="0 0 16 16">' +
                     '<path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z"/>' +
                     '</svg></a>' :
-                    '<a href="#" class="btn btn-success disabled">' +
+                    '<a href="#" class="btn btn-sm btn-success disabled">' +
                     '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check" viewBox="0 0 16 16">' +
                     '<path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z"/>' +
                     '</svg></a>') +
-                '</td></tr>').appendTo('#lineItemsTable tbody');
-
+                '</td></tr>').prependTo('#lineItemsTable tbody');
             TestBatchListCount++;
         }
+        $(document).on('click', 'a.btn.btn-sm.btn-warning', function (e) {
+    e.preventDefault();
+    var refNo = $(this).attr('href').split('?RefNo=')[1];
+    $('#refNo').val(refNo);
+    $('#confirmationModal').modal('show');
+});
+    $(document).on('click', '[data-dismiss="modal"]', function (e) {
+        e.preventDefault();
+        $(this).closest('.modal').modal('hide');
+    });
     });
 </script>

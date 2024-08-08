@@ -4,54 +4,46 @@
     ViewData["Title"] = "Dashboard";
     Layout = "_Layout";
     string fullName = (string)Context.Session.GetString("FullName");
-
 }
 
-<section class="container p-3">
-
-      <div class="card-text text-center p-3 line" style="font-size: 20px;font-weight: 500;text-decoration: underline;">Welcome! @fullName</div>
-      <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-4">
-    
-    
+<section class="container p-3" style="margin-top: 10vh; background-color: #f7f7f7; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+    <div class="card-text text-center p-3 line" style="font-size: 20px; font-weight: 500; text-decoration: underline; color: #333;">Welcome! @fullName</div>
+    <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-4">
         <!-- LUP START -->
-        <a href="#" class="col" style="text-decoration: none; color: black;">
-          <div class="card" style="background-color: #C6F4D6;">
-            <div class="card-body">
-              <h5 class="card-title text-center" style="color: #666;">Total Created
-              <p class="card-text text-center" style="font-size: 50px;font-weight: 900;">@Model.TotalCreated</p>
+        <a href="#" class="col" style="text-decoration: none; color: #333;">
+            <div class="card" style="background-color: #fff; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+                <div class="card-body">
+                    <h5 class="card-title text-center" style="color: #666; font-size: 16px;">Total Created</h5>
+                    <p class="card-text text-center" style="font-size: 36px; font-weight: 900; color: #333;">@Model.TotalCreated</p>
+                </div>
             </div>
-          </div>
         </a>
 
-        <a href="#" class="col" style="text-decoration: none; color: black;">
-          <div class="card" style="background-color: #C6F4D6;">
-            <div class="card-body">
-              <h5 class="card-title text-center" style="color: #666;">Pending in QC
-              <p class="card-text text-center" style="font-size: 50px;font-weight: 900;">@Model.PendingInQc</p>
+        <a href="#" class="col" style="text-decoration: none; color: #333;">
+            <div class="card" style="background-color: #fff; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+                <div class="card-body">
+                    <h5 class="card-title text-center" style="color: #666; font-size: 16px;">Pending in QC</h5>
+                    <p class="card-text text-center" style="font-size: 36px; font-weight: 900; color: #333;">@Model.PendingInQc</p>
+                </div>
             </div>
-          </div>
         </a>
 
-        <a href="#" class="col" style="text-decoration: none; color: black;">
-          <div class="card" style="background-color: #C6F4D6;">
-            <div class="card-body">
-              <h5 class="card-title text-center" style="color: #666;">Pending in Accounts
-              <p class="card-text text-center" style="font-size: 50px;font-weight: 900;">@Model.PendingInAccounts</p>
+        <a href="#" class="col" style="text-decoration: none; color: #333;">
+            <div class="card" style="background-color: #fff; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+                <div class="card-body">
+                    <h5 class="card-title text-center" style="color: #666; font-size: 16px;">Pending in Accounts</h5>
+                    <p class="card-text text-center" style="font-size: 36px; font-weight: 900; color: #333;">@Model.PendingInAccounts</p>
+                </div>
             </div>
-          </div>
         </a>
 
-        <a href="#" class="col" style="text-decoration: none; color: black;">
-          <div class="card" style="background-color: #C6F4D6;">
-            <div class="card-body">
-              <h5 class="card-title text-center" style="color: #666;">Pending in Production
-              <p class="card-text text-center" style="font-size: 50px;font-weight: 900;">@Model.PendingInProduction</p>
+        <a href="#" class="col" style="text-decoration: none; color: #333;">
+            <div class="card" style="background-color: #fff; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+                <div class="card-body">
+                    <h5 class="card-title text-center" style="color: #666; font-size: 16px;">Pending in Production</h5>
+                    <p class="card-text text-center" style="font-size: 36px; font-weight: 900; color: #333;">@Model.PendingInProduction</p>
+                </div>
             </div>
-          </div>
         </a>
-
-
-      </div>
-      
+    </div>
 </section>
-

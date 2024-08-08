@@ -1,5 +1,7 @@
 ﻿@{
     int userRoleId = (int)Context.Session.GetInt32("userRole");
+    string fullName = (string)Context.Session.GetString("FullName");
+
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -10,11 +12,22 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/TBAM.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+    <style>
+        .navbar-dark .navbar-nav .nav-link {
+            transition: color 0.2s ease-in-out;
+        }
+
+        .navbar-dark .navbar-nav .nav-link:hover {
+            color: #fff !important;
+            background-color: #343a40;
+            border-radius: 5px;
+        }
+    </style>
 </head>
 <body>
-
-        <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
             <div class="container-fluid">
                 <a class="navbar-brand" asp-area="" asp-controller="Dashboard" asp-action="Index">TBAM</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
@@ -23,33 +36,32 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                        
                         <li class="nav-item">
                             @if (userRoleId == 1) // assuming QC role ID is 2
                             {
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Dashboard" asp-action="CreateTestBatch">Creat Test Form</a>
+                                <a class="nav-link text-light" asp-area="" asp-controller="Dashboard" asp-action="CreateTestBatch"><i class="fas fa-plus-circle"></i> Create Test Form</a>
                             }
-                            @* <a class="nav-link text-dark" asp-area="" asp-controller="Dashboard" asp-action="CreateTestBatch">Creat Test Form</a> *@
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Dashboard" asp-action="TestBatchList">Test Batch List</a>
+                            <a class="nav-link text-light" asp-area="" asp-controller="Dashboard" asp-action="TestBatchList"><i class="fas fa-list-alt"></i> Test Batch List</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Dashboard" asp-action="Logout">Logout</a>
+                            <a class="nav-link text-light" asp-area="" asp-controller="Dashboard" asp-action="Logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
                         </li>
                     </ul>
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-user-circle fa-2x text-light mr-2"></i>
+                        <span class="navbar-text text-light">@fullName</span>
+                    </div>
                 </div>
             </div>
         </nav>
     </header>
-    
-   
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
-
     <footer class="border-top footer text-muted">
         <div class="container">
             &copy; 2024 - TBAM - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
@@ -58,7 +70,6 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

@@ -5,64 +5,84 @@
     Layout = "_Layout";
 }
 
-<h2 class="mb-4">@ViewData["Title"]</h2>
+<div class="container-fluid" style="margin-top: 20px;">
+    <div class="card">
+        <div class="card-header text-center">
+            <h2 class="mb-0">@ViewData["Title"]</h2>
+        </div>
+        <div class="card-body">
+            <form asp-action="SubmitTestForm" method="post">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <input type="hidden" name="RefNo" class="form-control" required/>
+                            <label for="PurposeOfTesting">Purpose of Testing</label>
+                            <select id="PurposeOfTesting" name="PurposesOfTesting[0]" class="form-control">
+                                @foreach (var purpose in Model.PurposesOfTesting)
+                                {
+                                    <option value="@purpose">@purpose</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="Plant">Plant</label>
+                            <select id="Plant" name="Plants[0]" class="form-control">
+                                @foreach (var plant in Model.Plants)
+                                {
+                                    <option value="@plant">@plant</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="TestDetails">Test Details</label>
+                    <textarea id="TestDetails" name="TestDetails" class="form-control" required></textarea>
+                </div>
 
-<form asp-action="SubmitTestForm" method="post">
-    <div class="form-group">
-        <input type="hidden" name="RefNo" class="form-control" required/>
-        <label for="PurposeOfTesting">Purpose of Testing</label>
-        <select id="PurposeOfTesting" name="PurposesOfTesting[0]" class="form-control">
-            @foreach (var purpose in Model.PurposesOfTesting)
-            {
-                <option value="@purpose">@purpose</option>
-            }
-        </select>
+                <h3 class="mt-4">Line Items</h3>
+                <table id="lineItemsTable" class="table table-bordered mt-3">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>Product Code</th>
+                            <th>Product Name</th>
+                            <th>Workcentre</th>
+                            <th>Quantity</th>
+                            <th>Remarks</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                </table>
+                <button id="addLineItem" type="button" class="btn btn-primary">Add Line Item</button>
+
+                <hr />
+                <button id="backButton" type="button" class="btn btn-secondary" onclick="backButtonClicked()">Back</button>
+                <button id="clickSubmit" type="submit" class="btn btn-success" onclick="return validateForm()">Save</button>
+            </form>
+        </div>
     </div>
-    <div class="form-group">
-        <label for="Plant">Plant</label>
-        <select id="Plant" name="Plants[0]" class="form-control">
-            @foreach (var plant in Model.Plants)
-            {
-                <option value="@plant">@plant</option>
-            }
-        </select>
-    </div>
-    <div class="form-group">
-        <label for="TestDetails">Test Details</label>
-        <textarea id="TestDetails" name="TestDetails" class="form-control" required></textarea>
-    </div>
+</div>
 
-    <h3 class="mt-4">Line Items</h3>
-    <table id="lineItemsTable" class="table table-bordered mt-3">
-        <thead class="thead-light">
-            <tr>
-                <th>Product Code</th>
-                <th>Product Name</th>
-                <th>Workcentre</th>
-                <th>Quantity</th>
-                <th>Remarks</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-
-        <tbody>
-
-        </tbody>
-    </table>
-    <button id="addLineItem" type="button" class="btn btn-primary">Add Line Item</button>
-
-    <hr />
-    <button id="clickSubmit" type="submit" class="btn btn-success">Save</button>
-
-</form>
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 <script type="text/javascript">
+
     var lineItemCounter = 0;
+    var formChanged = false;
     console.log("script running")
     $(document).ready(async function () {
         var productCodeToNameMap = {};
         var RefNo = '@Model.RefNo';
+
+        // event listeners to detect form changes
+        $('input, select, textarea').on('change', function () {
+            formChanged = true;
+        });
 
         if(RefNo != "")
         {
@@ -76,6 +96,12 @@
             $(this).find('textarea[name="TestDetails"]').val(testdetails);
             $(this).find('select[name="Plant[0]"]').val(testdetails);
             $(this).find('select[name="PurposesOfTesting[0]"]').val(selectedPurposesOfTesting);
+                if ($('#lineItemsTable tbody tr').length === 0) {
+    $('#lineItemsTable tbody').append('<tr id="no-products-message"><td colspan="6">No product added.</td></tr>');
+}
+else
+    $('#no-products-message').remove();
+
         }
 
 
@@ -143,6 +169,9 @@
                 workcentreOptions += '<option value="' + workcentre + '">' + workcentre + '</option>';
             });
 
+            formChanged = true; // Set formChanged to true when a line item is added
+
+
             $('<tr id="lineItemRow' + lineItemCounter + '"><td>' +
                 '<select name="LineItems[' + lineItemCounter + '].ProductCode" class="form-control product-code-select" required>' + productOptions + '</select>' +
                 '</td><td>' +
@@ -157,9 +186,20 @@
                 '<button type="button" class="btn btn-danger" onclick="removeLineItem(' + lineItemCounter + ');">Delete</button>' +
                 '</td></tr>').appendTo('#lineItemsTable tbody');
             lineItemCounter++;
+
+            $('#no-products-message').remove();
+
+
+        
+
             return false;
         });
     });
+
+    // Add a message "No product added." when no line items are present
+if ($('#lineItemsTable tbody tr').length === 0) {
+    $('#lineItemsTable tbody').append('<tr id="no-products-message"><td colspan="6">No product added.</td></tr>');
+}
 
     async function removeLineItem(index) {
         await $('#lineItemRow' + index).remove();
@@ -176,6 +216,27 @@
     });
 
     lineItemCounter = $('#lineItemsTable tbody tr').length;
+
+    if ($('#lineItemsTable tbody tr').length === 0) {
+    $('#lineItemsTable tbody').append('<tr id="no-products-message"><td colspan="6">No product added.</td></tr>');
+}
+    }
+    function backButtonClicked() {
+        if (formChanged) {
+            if (confirm("You have unsaved changes. Are you sure you want to leave this page?")) {
+                window.history.back();
+            }
+        } else {
+            window.history.back();
+        }
+    }
+
+        function validateForm() {
+        if ($('#lineItemsTable tbody tr').length === 1 && $('#no-products-message').length > 0) {
+            alert("No product added.");
+            return false;
+        }
+        return true;
     }
 
 </script>
