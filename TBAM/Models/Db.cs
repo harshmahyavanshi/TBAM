@@ -169,15 +169,15 @@ namespace TBAM.Models
         public string Refno { get; set; }
 
         [ForeignKey("PurposesOfTesting")]
-        public required int PurposesOfTestingId { get; set; }
+        public  int PurposesOfTestingId { get; set; }
 
         [ForeignKey("Plants")]
-        public required int PlantId { get; set; }
+        public  int PlantId { get; set; }
 
-        public required string TestDetails { get; set; }
+        public  string TestDetails { get; set; }
 
         [ForeignKey("User")]
-        public required int CreatedBy { get; set; }
+        public  int CreatedBy { get; set; }
         public DateTime CreatedAt { get; set; }
 
         [ForeignKey("User")]

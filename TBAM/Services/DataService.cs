@@ -7,6 +7,7 @@ using System.Security.Claims;
 using System.Text.Json;
 using TBAM.Data;
 using Microsoft.AspNetCore.Http.Features;
+using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 
 
 public class DataService
@@ -68,7 +69,7 @@ public class DataService
             PlantId = PlantId.FirstOrDefault().Id,
             TestDetails = model.TestDetails,
             CreatedBy = (int)userId,
-            Status = "QC"
+            Status = "Initiator"
 
         };
 
@@ -117,9 +118,10 @@ public class DataService
         return isCreatedSuccessfully;
     }
 
-    public async Task<TestBatchListModel> GetTestBatchList(int? userId, string? Filter=null)
+    public async Task<TestBatchListModel> GetTestBatchList(int? userId, string? Filter = null)
     {
-        var dataList = _context.TestBatch.Select(p => p).Where(p => p.CreatedBy == userId && p.IsDeleted == false).ToList();
+        var dataList = Filter == null ? await _context.TestBatch.Select(p => p).Where(p => p.CreatedBy == userId && p.IsDeleted == false).ToListAsync() :
+                                        await _context.TestBatch.Select(p => p).Where(p => p.CreatedBy == userId && p.IsDeleted == false && p.Status.Equals(Filter)).ToListAsync();
 
         var listOfBatch = new List<TestBatchModel>();
         // var purposeOfTesting = "Purpose of testing 1";
@@ -152,7 +154,7 @@ public class DataService
 
     public async Task<TestBatchModel> GetTestBatch(int? userId, string RefNo)
     {
-        var data = _context.TestBatch.Select(p => p).Where(p => p.CreatedBy == userId && p.IsDeleted == false && p.Refno == RefNo).ToList();
+        var data = await _context.TestBatch.Select(p => p).Where(p => p.CreatedBy == userId && p.IsDeleted == false && p.Refno == RefNo).ToListAsync();
 
         var purposeOfTesting = _context.PurposesOfTesting.Select(p => p).Where(p => p.Id == data.FirstOrDefault().PurposesOfTestingId);
         var plant = _context.Plants.Select(p => p).Where(p => p.Id == data.FirstOrDefault().PlantId);
@@ -172,7 +174,7 @@ public class DataService
     public async Task<List<LineItem>> GetTestBatchItemList(int? userId, string RefNo)
     {
 
-        var dataList = _context.TestBatchItem.Select(p => p).Where(p => p.Refno == RefNo && p.IsDeleted == false && p.CreatedBy == userId).ToList();
+        var dataList = await _context.TestBatchItem.Select(p => p).Where(p => p.Refno == RefNo && p.IsDeleted == false && p.CreatedBy == userId).ToListAsync();
 
         var listOfLineItem = new List<LineItem>();
 
@@ -213,7 +215,7 @@ public class DataService
 
         await _context.SaveChangesAsync();
 
-        
+
 
         return true;
     }
@@ -242,16 +244,18 @@ public class DataService
         return true;
     }
 
-    public async Task<List<TestBatchListModel>> GetDashboardCounts(){
+    public async Task<List<TestBatchListModel>> GetDashboardCounts()
+    {
 
-        var listOfTestBatchListCount = new List<TestBatchListModel>() ;
+        var listOfTestBatchListCount = new List<TestBatchListModel>();
 
         var roles = await _context.Role.Where(r => r.IsDeleted == false).ToListAsync();
 
-        foreach(var role in roles)
+        foreach (var role in roles)
         {
             var count = await _context.TestBatch.CountAsync(p => p.IsDeleted == false && p.Status.Equals(role.RoleName.ToString()));
-            var testBatchList = new TestBatchListModel {
+            var testBatchList = new TestBatchListModel
+            {
                 Filter = role.RoleName,
                 Count = count
             };
@@ -262,16 +266,43 @@ public class DataService
         return listOfTestBatchListCount;
     }
 
-    public async Task<bool> GetEditPermission(int? userRoleId, string RefNo){
+    public async Task<bool> GetEditPermission(int? userRoleId, string RefNo)
+    {
         var role = await _context.Role.Where(r => r.IsDeleted == false && r.Id == userRoleId).ToListAsync();
 
-        var status = await _context.TestBatch.Select(p=>p).Where(p=>p.IsDeleted==false && p.Refno == RefNo && p.Status.Equals(role.FirstOrDefault().RoleName)).ToListAsync();
+        var status = await _context.TestBatch.Select(p => p).Where(p => p.IsDeleted == false && p.Refno == RefNo && p.Status.Equals(role.FirstOrDefault().RoleName)).ToListAsync();
 
-        if(status.Count != 0)
+        if (status.Count != 0)
         {
             return true;
         }
 
         return false;
     }
+
+    public async Task<bool> SendAction(string RefNo, int? userRoleId, int action)
+    {
+        var approver = userRoleId + action;
+
+        var role = await _context.Role.Where(r => r.IsDeleted == false && r.Id == approver).ToListAsync();
+
+        var testBatch = _context.TestBatch.Select(p => p).Where(p => p.IsDeleted == false && p.Refno == RefNo).FirstOrDefault();
+
+        //fill TestBatch model
+
+        if (role.Count > 0)
+        {
+            testBatch.Status = role.FirstOrDefault().RoleName;
+
+            _context.TestBatch.Update(testBatch);
+
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
+
+
+        return false;
+    }
+
 }

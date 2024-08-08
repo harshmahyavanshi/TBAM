@@ -1,0 +1,16 @@
+@model ConfirmSendForApprovalViewModel
+
+@{
+    ViewData["Title"] = "Send For Approval";
+    Layout = "_Layout";
+}
+
+<div class="alert alert-warning">
+    @TempData["ConfirmationMessage"]
+</div>
+
+<form asp-action="ConfirmSendForApproval" method="post">
+    <input type="hidden" asp-for="RefNo" />
+    <button type="submit" class="btn btn-primary">Yes, send for approval</button>
+    <a asp-action="TestBatchList" class="btn btn-secondary">No, cancel</a>
+</form>

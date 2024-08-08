@@ -7,54 +7,76 @@
 }
 
 <h2>@ViewData["Title"]</h2>
-    <table id="lineItemsTable" class="table table-bordered mt-3">
-        <thead class="thead-light">
-            <tr>
-                <th>Sr No.</th>
-                <th>Purpose of Testing</th>
-                <th>Plant</th>
-                <th>Status</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
+@if (@TempData["Message"] != null)
+{
+    <div class="alert alert-warning">
+    @TempData["Message"]
+</div>
+}
+
+<table id="lineItemsTable" class="table table-bordered mt-3">
+    <thead class="thead-light">
+        <tr>
+            <th>Sr No.</th>
+            <th>Ref No.</th>
+            <th>Purpose of Testing</th>
+            <th>Plant</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
 
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 <script type="text/javascript">
 
-   $(document).ready(async function () {
-    var TestBatchListCount = 1;
-    var ListOfBatch = [];
+    $(document).ready(async function () {
+        var TestBatchListCount = 1;
+        var ListOfBatch = [];
 
     @for (int i = 0; i < Model.ListOfBatch.Count; i++)
     {
         @:ListOfBatch[@i] = @Json.Serialize(Model.ListOfBatch[i]);
     }
 
-    console.log("ListOfBatch.length ", ListOfBatch.length)
+            console.log("ListOfBatch.length ", ListOfBatch.length)
 
-    for (var i = 0; i < ListOfBatch.length; i++) 
-    {
-        console.log("ListOfBatch[i].RefNo ",JSON.stringify(ListOfBatch[i]))
-        var editUrl = '@Url.Action("EditTestBatch", "Dashboard")';
-        $('<tr id="lineItemRow' + i + '"><td>' +
-        '  <label for="html">'+TestBatchListCount+'</label><br>' +
-        '</td><td>' +
-        '<input type="text" name="Model.PurposesOfTesting" value="' + ListOfBatch[i].purposesOfTesting + '" class="form-control" disabled />  ' +
-        '</td><td>' +
-        '<input type="text" name="Model.Plant" value="' + ListOfBatch[i].plant + '" class="form-control" disabled />  ' +
-        '</td><td>' +
-        '<input type="text" name="Model.Status" value="' + ListOfBatch[i].status + '" class="form-control" disabled />  ' +
-        '</td><td>' +
-        '<input type="hidden" value="' + ListOfBatch[i].id + '"/>' +
-        (ListOfBatch[i].status == "Initiator" ? 
-            '<a href="' + editUrl + '?RefNo=' + ListOfBatch[i].refNo + '" class="btn btn-danger">Edit</a>' : 
-            '<a href="#" class="btn btn-danger disabled" >Edit</a>') +
-        '</td></tr>').appendTo('#lineItemsTable tbody');
-        TestBatchListCount++;
-    }
-});
+        for (var i = 0; i < ListOfBatch.length; i++) {
+            console.log("ListOfBatch[i].RefNo ", JSON.stringify(ListOfBatch[i]))
+            var editUrl = '@Url.Action("EditTestBatch", "Dashboard")';
+            var sendForApprovalUrl = '@Url.Action("SendForApproval", "Dashboard")';
+
+            $('<tr id="lineItemRow' + i + '"><td>' +
+                '  <label for="html">' + TestBatchListCount + '</label><br>' +
+                '</td><td>' +
+                '<input type="text" name="Model.PurposesOfTesting" value="' + ListOfBatch[i].refNo + '" class="form-control" disabled />  ' +
+                '</td><td>' +
+                '<input type="text" name="Model.PurposesOfTesting" value="' + ListOfBatch[i].purposesOfTesting + '" class="form-control" disabled />  ' +
+                '</td><td>' +
+                '<input type="text" name="Model.Plant" value="' + ListOfBatch[i].plant + '" class="form-control" disabled />  ' +
+                '</td><td>' +
+                '<input type="text" name="Model.Status" value="' + ListOfBatch[i].status + '" class="form-control" disabled />  ' +
+                '</td><td>' +
+                '<input type="hidden" value="' + ListOfBatch[i].id + '"/>' +
+                (ListOfBatch[i].status == "Initiator" ?
+                    '<a href="' + editUrl + '?RefNo=' + ListOfBatch[i].refNo + '" class="btn btn-danger">Edit</a>' :
+                    '<a href="#" class="btn btn-danger disabled" >Edit</a>') +
+                '&nbsp;&nbsp;' +
+                (ListOfBatch[i].status == "Initiator" ?
+                    '<a href="' + sendForApprovalUrl + '?RefNo=' + ListOfBatch[i].refNo + '" class="btn btn-warning">' +
+                    '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check" viewBox="0 0 16 16">' +
+                    '<path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z"/>' +
+                    '</svg></a>' :
+                    '<a href="#" class="btn btn-success disabled">' +
+                    '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check" viewBox="0 0 16 16">' +
+                    '<path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z"/>' +
+                    '</svg></a>') +
+                '</td></tr>').appendTo('#lineItemsTable tbody');
+
+            TestBatchListCount++;
+        }
+    });
 </script>

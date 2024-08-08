@@ -17,6 +17,8 @@ public class TestFormViewModel
     public int SelectedPlant {get; set;}
 
     public string SelectedPurposeofTesting {get; set;}
+
+    public bool isSave {get; set;}
      
 
 }

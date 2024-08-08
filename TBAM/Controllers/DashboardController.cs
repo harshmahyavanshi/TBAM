@@ -28,29 +28,29 @@ namespace TBAM.Controllers
 
             var dashboardCounts = new DashboardViewModel();
 
-            foreach(var batchCount in listOfBatchCount)
+            foreach (var batchCount in listOfBatchCount)
             {
 
-                switch(batchCount.Filter)
+                switch (batchCount.Filter)
                 {
                     case "Initiator":
-                    dashboardCounts.TotalCreated = batchCount.Count;
-                    break;
+                        dashboardCounts.TotalCreated = batchCount.Count;
+                        break;
 
                     case "QC":
-                    dashboardCounts.PendingInQc = batchCount.Count;
-                    break;
-                    
+                        dashboardCounts.PendingInQc = batchCount.Count;
+                        break;
+
                     case "Costing":
-                    dashboardCounts.PendingInAccounts = batchCount.Count;
-                    break;
-                    
+                        dashboardCounts.PendingInAccounts = batchCount.Count;
+                        break;
+
                     case "Manufacturing Head":
-                    dashboardCounts.PendingInProduction = batchCount.Count;
-                    break;
+                        dashboardCounts.PendingInProduction = batchCount.Count;
+                        break;
                 }
             }
-            
+
             return View(dashboardCounts);
         }
 
@@ -76,9 +76,9 @@ namespace TBAM.Controllers
                 else
                 {
                     var userId = HttpContext.Session.GetInt32("userId");
-                    var lineItemList = await _dataService.GetTestBatchItemList(userId,RefNo);
+                    var lineItemList = await _dataService.GetTestBatchItemList(userId, RefNo);
                     //var testDetails =  _context.TestBatch.Select(p=>p).Where(p=>p.Refno == RefNo).FirstOrDefault().TestDetails;
-                    var testBatch = await _dataService.GetTestBatch(userId,RefNo);
+                    var testBatch = await _dataService.GetTestBatch(userId, RefNo);
                     var model = new TestFormViewModel
                     {
                         LineItems = lineItemList,
@@ -109,13 +109,59 @@ namespace TBAM.Controllers
             {
                 return RedirectToAction("TestBatchList", "Dashboard");
             }
-            
+
             return View("Index", model);
         }
 
-        public IActionResult Success(TestFormViewModel model)
+        public async Task<IActionResult> SendForApproval(string RefNo)
         {
+            if (HttpContext.Session.Get("userId") != null)
+            {
+                var userRoleId = HttpContext.Session.GetInt32("userRole");
+                int SendForApproval = 1;
+
+                // Show confirmation alert
+                TempData["ConfirmationMessage"] = RefNo + " Are you sure you want to send this test batch for approval?";
+
+                return View("ConfirmSendForApproval", new ConfirmSendForApprovalViewModel { RefNo = RefNo });
+            }
+
+            return RedirectToAction("Index", "Login");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ConfirmSendForApproval(ConfirmSendForApprovalViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var userRoleId = HttpContext.Session.GetInt32("userRole");
+                int SendForApproval = 1;
+
+                var isSentForApproval = await _dataService.SendAction(model.RefNo, userRoleId, SendForApproval);
+
+                if (isSentForApproval)
+                    TempData["Message"] = model.RefNo + " Test batch sent for approval successfully!";
+                else
+                    TempData["Message"] = model.RefNo + " Test batch not sent for approval!";
+
+                return RedirectToAction("TestBatchList", "Dashboard");
+            }
+
             return View(model);
+        }
+        public async Task<IActionResult> SendBack(string RefNo)
+        {
+            if (HttpContext.Session.Get("userId") != null)
+            {
+                var userRoleId = HttpContext.Session.GetInt32("userRole");
+                int SendBack = -1;
+
+                await _dataService.SendAction(RefNo, userRoleId, SendBack);
+
+                return RedirectToAction("TestBatchList", "Dashboard");
+            }
+
+            return RedirectToAction("Index", "Login");
         }
 
         public async Task<IActionResult> TestBatchList()
@@ -137,10 +183,10 @@ namespace TBAM.Controllers
             {
                 var userRoleId = HttpContext.Session.GetInt32("userRole");
 
-                var isEditAllowed = await _dataService.GetEditPermission(userRoleId,RefNo);
+                var isEditAllowed = await _dataService.GetEditPermission(userRoleId, RefNo);
 
-                if(isEditAllowed)
-                    return RedirectToAction("CreateTestBatch", "Dashboard", new {RefNo});
+                if (isEditAllowed)
+                    return RedirectToAction("CreateTestBatch", "Dashboard", new { RefNo });
                 else
                     return RedirectToAction("TestBatchList", "Dashboard");
             }
