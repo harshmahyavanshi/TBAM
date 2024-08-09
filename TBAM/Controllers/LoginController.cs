@@ -34,6 +34,7 @@ namespace TBAM.Controllers
                 // For demonstration purposes, just return a success message
                 var data =_context.User.Where(s => s.Email.Equals(model.Email) && s.Password.Equals(model.Password)).ToList();
                 var userRole = _context.UserRole.Where(s => s.LoginId == data.FirstOrDefault().Id);
+                var roleName = _context.Role.Where(r=> r.Id == userRole.FirstOrDefault().RoleId);
                 if (data.Count() > 0)
                 {
                     //add session
@@ -44,7 +45,7 @@ namespace TBAM.Controllers
                     var email = data.FirstOrDefault().Email;
                     HttpContext.Session.SetString("FullName",fullName);
                     HttpContext.Session.SetString("Email",email);
-                    HttpContext.Session.SetInt32("userRole", userRole.FirstOrDefault().RoleId); //Change Id to RoleId.
+                    HttpContext.Session.SetString("userRole", roleName.FirstOrDefault().RoleName); //Change Id to RoleId.
                     HttpContext.Session.SetInt32("userId", data.FirstOrDefault().Id);
 
                     return RedirectToAction("Index", "Dashboard");

@@ -134,7 +134,7 @@ namespace TBAM.Controllers
         {
             if (ModelState.IsValid)
             {
-                var userRoleId = HttpContext.Session.GetInt32("userRole");
+                var userRoleId = HttpContext.Session.GetString("userRole");
                 int SendForApproval = 1;
 
                 var isSentForApproval = await _dataService.SendAction(model.RefNo, userRoleId, SendForApproval);
@@ -149,14 +149,17 @@ namespace TBAM.Controllers
 
             return View(model);
         }
+
         public async Task<IActionResult> SendBack(string RefNo)
         {
             if (HttpContext.Session.Get("userId") != null)
             {
-                var userRoleId = HttpContext.Session.GetInt32("userRole");
+                var userRole = HttpContext.Session.GetString("userRole");
                 int SendBack = -1;
 
-                await _dataService.SendAction(RefNo, userRoleId, SendBack);
+                await _dataService.SendAction(RefNo, userRole, SendBack);
+
+                //return Json(new { success = true });
 
                 return RedirectToAction("TestBatchList", "Dashboard");
             }
@@ -181,9 +184,9 @@ namespace TBAM.Controllers
         {
             if (HttpContext.Session.Get("userId") != null)
             {
-                var userRoleId = HttpContext.Session.GetInt32("userRole");
+                var userRole = HttpContext.Session.GetString("userRole");
 
-                var isEditAllowed = await _dataService.GetEditPermission(userRoleId, RefNo);
+                var isEditAllowed = await _dataService.GetEditPermission(userRole, RefNo);
 
                 if (isEditAllowed)
                     return RedirectToAction("CreateTestBatch", "Dashboard", new { RefNo });
@@ -192,6 +195,13 @@ namespace TBAM.Controllers
             }
             return RedirectToAction("Index", "Login");
         }
+
+        [HttpGet]
+public IActionResult GetProductCodesForPlant(string plant)
+{
+    var productCodes = _dataService.GetProductCodesForPlant(plant);
+    return Json(productCodes);
+}
 
         //Logout
         public ActionResult Logout()

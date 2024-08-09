@@ -3,6 +3,7 @@
 @{
     ViewData["Title"] = "Test Form";
     Layout = "_Layout";
+    string Role = (string)Context.Session.GetString("userRole");
 }
 
 <div class="container-fluid" style="margin-top: 20px;">
@@ -15,9 +16,9 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <input type="hidden" name="RefNo" class="form-control" required/>
+                            <input type="hidden" name="RefNo" class="form-control" required />
                             <label for="PurposeOfTesting">Purpose of Testing</label>
-                            <select id="PurposeOfTesting" name="PurposesOfTesting[0]" class="form-control">
+                            <select id="PurposeOfTesting" name="PurposesOfTesting[0]" class="form-control" @(Role == "QC" ? "disabled" : "")>
                                 @foreach (var purpose in Model.PurposesOfTesting)
                                 {
                                     <option value="@purpose">@purpose</option>
@@ -28,7 +29,7 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="Plant">Plant</label>
-                            <select id="Plant" name="Plants[0]" class="form-control">
+                            <select id="Plant" name="Plants[0]" class="form-control" @(Role == "QC" ? "disabled" : "")>
                                 @foreach (var plant in Model.Plants)
                                 {
                                     <option value="@plant">@plant</option>
@@ -39,7 +40,7 @@
                 </div>
                 <div class="form-group">
                     <label for="TestDetails">Test Details</label>
-                    <textarea id="TestDetails" name="TestDetails" class="form-control" required></textarea>
+                    <textarea id="TestDetails" name="TestDetails" class="form-control" required @(Role == "QC" ? "readonly" : "")></textarea>
                 </div>
 
                 <h3 class="mt-4">Line Items</h3>
@@ -51,18 +52,32 @@
                             <th>Workcentre</th>
                             <th>Quantity</th>
                             <th>Remarks</th>
-                            <th>Actions</th>
+                            @if (Role == "Initiator")
+                            {
+                                <th>Actions</th>
+                            }
                         </tr>
                     </thead>
                     <tbody>
 
                     </tbody>
                 </table>
-                <button id="addLineItem" type="button" class="btn btn-primary">Add Line Item</button>
+                @if (Role == "Initiator")
+                {
+                    <button id="addLineItem" type="button" class="btn btn-primary">Add Line Item</button>
+                
 
                 <hr />
-                <button id="backButton" type="button" class="btn btn-secondary" onclick="backButtonClicked()">Back</button>
-                <button id="clickSubmit" type="submit" class="btn btn-success" onclick="return validateForm()">Save</button>
+ 
+                    <button id="backButton" type="button" class="btn btn-secondary"
+                            onclick="backButtonClicked()">
+                        Back
+                    </button>
+                    <button id="clickSubmit" type="submit" class="btn btn-success"
+                            onclick="return validateForm()">
+                        Save
+                    </button>
+                }
             </form>
         </div>
     </div>
@@ -84,23 +99,24 @@
             formChanged = true;
         });
 
-        if(RefNo != "")
-        {
+
+
+        if (RefNo != "") {
             var testdetails = '@Model.TestDetails';
             var selectedPlant = '@Model.SelectedPlant';
             var selectedPurposesOfTesting = '@Model.SelectedPurposeofTesting';
 
-            console.log("selectedPurposesOfTesting ",selectedPurposesOfTesting)
-            
+            console.log("selectedPurposesOfTesting ", selectedPurposesOfTesting)
+
             $(this).find('input[name="RefNo"]').val(RefNo);
             $(this).find('textarea[name="TestDetails"]').val(testdetails);
             $(this).find('select[name="Plant[0]"]').val(testdetails);
             $(this).find('select[name="PurposesOfTesting[0]"]').val(selectedPurposesOfTesting);
-                if ($('#lineItemsTable tbody tr').length === 0) {
-    $('#lineItemsTable tbody').append('<tr id="no-products-message"><td colspan="6">No product added.</td></tr>');
-}
-else
-    $('#no-products-message').remove();
+            if ($('#lineItemsTable tbody tr').length === 0) {
+                $('#lineItemsTable tbody').append('<tr id="no-products-message"><td colspan="6">No product added.</td></tr>');
+            }
+            else
+                $('#no-products-message').remove();
 
         }
 
@@ -133,7 +149,10 @@ else
         @:'</td><td>' +
         @:'<input type="text" value="' + lineItem.remarks + '" name="LineItems[' + index + '].Remarks" class="form-control" required/>' +
         @:'</td><td>' +
-        @:'<button type="button" class="btn btn-danger" onclick="removeLineItem(' + index + ');">Delete</button>' +
+        @if (Role == "Initiator")
+        {
+            @:'<button type="button" class="btn btn-danger" onclick="removeLineItem(' + lineItemCounter + ');">Delete</button>' +
+        }
         @:'</td></tr>').appendTo('#lineItemsTable tbody');
         @:lineItemCounter++;
         @:});
@@ -163,63 +182,70 @@ else
             var productOptions = availableProductCodes.map(code => `<option value="${code}">${code}</option>`).join('');
             var productNameOptions = availableProductCodes.map(code => `<option value="${productCodeToNameMap[code]}" >${productCodeToNameMap[code]}</option>`).join('');
 
-            var availableWorkcentres = @Html.Raw(Json.Serialize(Model.Workcentres));
-            var workcentreOptions = '';
-            availableWorkcentres.forEach(function (workcentre) {
-                workcentreOptions += '<option value="' + workcentre + '">' + workcentre + '</option>';
-            });
+        var availableWorkcentres = @Html.Raw(Json.Serialize(Model.Workcentres));
+        var workcentreOptions = '';
+        availableWorkcentres.forEach(function (workcentre) {
+            workcentreOptions += '<option value="' + workcentre + '">' + workcentre + '</option>';
+        });
 
-            formChanged = true; // Set formChanged to true when a line item is added
-
-
-            $('<tr id="lineItemRow' + lineItemCounter + '"><td>' +
-                '<select name="LineItems[' + lineItemCounter + '].ProductCode" class="form-control product-code-select" required>' + productOptions + '</select>' +
-                '</td><td>' +
-                '<select name="LineItems[' + lineItemCounter + '].ProductName" class="form-control product-name-select" style="pointer-events: none;" required>' + productNameOptions + '</select>' +
-                '</td><td>' +
-                '<select name="LineItems[' + lineItemCounter + '].Workcentre" class="form-control" required>' + workcentreOptions + '</select>' +
-                '</td><td>' +
-                '<input type="number" min="1" value="1" name="LineItems[' + lineItemCounter + '].Quantity" class="form-control" required/>' +
-                '</td><td>' +
-                '<input type="text" name="LineItems[' + lineItemCounter + '].Remarks" class="form-control" required/>' +
-                '</td><td>' +
-                '<button type="button" class="btn btn-danger" onclick="removeLineItem(' + lineItemCounter + ');">Delete</button>' +
-                '</td></tr>').appendTo('#lineItemsTable tbody');
-            lineItemCounter++;
-
-            $('#no-products-message').remove();
+        formChanged = true; // Set formChanged to true when a line item is added
 
 
-        
+        $('<tr id="lineItemRow' + lineItemCounter + '"><td>' +
+            '<select name="LineItems[' + lineItemCounter + '].ProductCode" class="form-control product-code-select" required>' + productOptions + '</select>' +
+            '</td><td>' +
+            '<select name="LineItems[' + lineItemCounter + '].ProductName" class="form-control product-name-select" style="pointer-events: none;" required>' + productNameOptions + '</select>' +
+            '</td><td>' +
+            '<select name="LineItems[' + lineItemCounter + '].Workcentre" class="form-control" required>' + workcentreOptions + '</select>' +
+            '</td><td>' +
+            '<input type="number" min="1" value="1" name="LineItems[' + lineItemCounter + '].Quantity" class="form-control" required/>' +
+            '</td><td>' +
+            '<input type="text" name="LineItems[' + lineItemCounter + '].Remarks" class="form-control" required/>' +
+            '</td>' +
+            @if (Role == "Initiator")
+            {
+                @:'<td>' +
+                @:'<button type="button" class="btn btn-danger" onclick="removeLineItem(' + lineItemCounter + ');">Delete</button>' +
+                @:'</td>'+
+            }
+            '</tr>').appendTo('#lineItemsTable tbody');
+        lineItemCounter++;
 
+        $('#no-products-message').remove();
             return false;
         });
+
+        @if (Role != "Initiator")
+        {
+            @:$('select[name^="LineItems"], input[name^="LineItems"]').attr('disabled', 'disabled');
+            @:$('button.btn-danger').hide();
+        }
     });
 
     // Add a message "No product added." when no line items are present
-if ($('#lineItemsTable tbody tr').length === 0) {
-    $('#lineItemsTable tbody').append('<tr id="no-products-message"><td colspan="6">No product added.</td></tr>');
-}
+    if ($('#lineItemsTable tbody tr').length === 0) {
+        $('#lineItemsTable tbody').append('<tr id="no-products-message"><td colspan="6">No product added.</td></tr>');
+    }
 
     async function removeLineItem(index) {
         await $('#lineItemRow' + index).remove();
 
         // Re-index the remaining items
-    $('#lineItemsTable tbody tr').each(function (newIndex) {
-        $(this).attr('id', 'lineItemRow' + newIndex);
-        $(this).find('select[name^="LineItems"][name$="ProductCode"]').attr('name', 'LineItems[' + newIndex + '].ProductCode');
-        $(this).find('select[name^="LineItems"][name$="ProductName"]').attr('name', 'LineItems[' + newIndex + '].ProductName');
-        $(this).find('select[name^="LineItems"][name$="Workcentre"]').attr('name', 'LineItems[' + newIndex + '].Workcentre');
-        $(this).find('input[name^="LineItems"][name$="Quantity"]').attr('name', 'LineItems[' + newIndex + '].Quantity');
-        $(this).find('input[name^="LineItems"][name$="Remarks"]').attr('name', 'LineItems[' + newIndex + '].Remarks');
-        $(this).find('button.btn-danger').attr('onclick', 'removeLineItem(' + newIndex + ');');
-    });
+        $('#lineItemsTable tbody tr').each(function (newIndex) {
+            $(this).attr('id', 'lineItemRow' + newIndex);
+            $(this).find('select[name^="LineItems"][name$="ProductCode"]').attr('name', 'LineItems[' + newIndex + '].ProductCode');
+            $(this).find('select[name^="LineItems"][name$="ProductName"]').attr('name', 'LineItems[' + newIndex + '].ProductName');
+            $(this).find('select[name^="LineItems"][name$="Workcentre"]').attr('name', 'LineItems[' + newIndex + '].Workcentre');
+            $(this).find('input[name^="LineItems"][name$="Quantity"]').attr('name', 'LineItems[' + newIndex + '].Quantity');
+            $(this).find('input[name^="LineItems"][name$="Remarks"]').attr('name', 'LineItems[' + newIndex + '].Remarks');
+            $(this).find('button.btn-danger').attr('onclick', 'removeLineItem(' + newIndex + ');');
+        });
 
-    lineItemCounter = $('#lineItemsTable tbody tr').length;
+        lineItemCounter = $('#lineItemsTable tbody tr').length;
 
-    if ($('#lineItemsTable tbody tr').length === 0) {
-    $('#lineItemsTable tbody').append('<tr id="no-products-message"><td colspan="6">No product added.</td></tr>');
-}
+        if ($('#lineItemsTable tbody tr').length === 0) {
+            $('#lineItemsTable tbody').append('<tr id="no-products-message"><td colspan="6">No product added.</td></tr>');
+        }
     }
     function backButtonClicked() {
         if (formChanged) {
@@ -231,12 +257,12 @@ if ($('#lineItemsTable tbody tr').length === 0) {
         }
     }
 
-        function validateForm() {
+    function validateForm() {
         if ($('#lineItemsTable tbody tr').length === 1 && $('#no-products-message').length > 0) {
             alert("No product added.");
             return false;
         }
         return true;
     }
-
+    
 </script>
