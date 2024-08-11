@@ -53,7 +53,7 @@ namespace TBAM.Controllers
                 else
                 {
                     ViewBag.error = "Login failed";
-                    return RedirectToAction("Login");
+                    return View(model);
                 }
                 // TempData["SuccessMessage"] = "Login successful!";
                 // return RedirectToAction("Index", "Dashboard");

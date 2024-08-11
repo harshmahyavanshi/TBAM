@@ -1,7 +1,7 @@
 ﻿@model TBAM.Models.TestFormViewModel
 
 @{
-    ViewData["Title"] = "Test Form";
+    ViewData["Title"] = "Test Batch Entry";
     Layout = "_Layout";
     string Role = (string)Context.Session.GetString("userRole");
 }
@@ -44,7 +44,7 @@
                 </div>
 
                 <h3 class="mt-4">Line Items</h3>
-                <table id="lineItemsTable" class="table table-bordered mt-3">
+                <table id="lineItemsTable" class="table table-bordered mt-3" style="width: 100%;     table-layout: fixed;">
                     <thead class="thead-light">
                         <tr>
                             <th>Product Code</th>
@@ -82,6 +82,51 @@
         </div>
     </div>
 </div>
+
+           
+
+<style>
+    .main-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #f9f9f9; /* add a light gray background color */
+    }
+
+    .card {
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* add a subtle box shadow */
+    }
+
+    .card-header {
+        background-color: #337ab7; /* add a blue background color to the card header */
+        color: #ffffff; /* add white text color to the card header */
+    }
+
+    .card-body {
+        padding: 20px; /* add some padding to the card body */
+    }
+
+    /* add some spacing between elements */
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    /* style the table */
+    #lineItemsTable {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    #lineItemsTable th, #lineItemsTable td {
+        border: 1px solid #ddd;
+        padding: 10px;
+        text-align: left;
+    }
+
+    #lineItemsTable th {
+        background-color: #f0f0f0;
+    }
+</style>
 
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
@@ -148,12 +193,14 @@
         @:'<input type="number" min="1" value="' + lineItem.quantity + '" name="LineItems[' + index + '].Quantity" class="form-control" required/>' +
         @:'</td><td>' +
         @:'<input type="text" value="' + lineItem.remarks + '" name="LineItems[' + index + '].Remarks" class="form-control" required/>' +
-        @:'</td><td>' +
+        @:'</td>' +
         @if (Role == "Initiator")
         {
+            @:'<td>'+
             @:'<button type="button" class="btn btn-danger" onclick="removeLineItem(' + lineItemCounter + ');">Delete</button>' +
+            @:'</td>'+
         }
-        @:'</td></tr>').appendTo('#lineItemsTable tbody');
+        @:'</tr>').appendTo('#lineItemsTable tbody');
         @:lineItemCounter++;
         @:});
     }

@@ -4,9 +4,13 @@
     ViewData["Title"] = "Dashboard";
     Layout = "_Layout";
     string fullName = (string)Context.Session.GetString("FullName");
+    string Role= (string)Context.Session.GetString("userRole");
+
 }
 
-<section class="container p-3" style="margin-top: 10vh; background-color: #f7f7f7; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+@if(Role == "Admin")
+{
+<section class="container p-3" style="margin-top: 20px; background-color: #f7f7f7; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
     <div class="card-text text-center p-3 line" style="font-size: 20px; font-weight: 500; text-decoration: underline; color: #333;">Welcome! @fullName</div>
     <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-4">
         <!-- LUP START -->
@@ -47,3 +51,29 @@
         </a>
     </div>
 </section>
+}
+else{
+<section class="container p-6" style="margin-left:250px; margin-top: 150px; background-color: #f7f7f7; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+    <div class="card-text text-center p-3 line" style="font-size: 20px; font-weight: 500; text-decoration: underline; color: #333;">Welcome! @fullName</div>
+    <div class="row row-cols-2 row-cols-md-3 row-cols-lg-2 g-4">
+        <!-- LUP START -->
+        <a asp-area="" asp-controller="Dashboard" asp-action="TestBatchList" class="col" style="text-decoration: none; color: #333;">
+    <div class="card" style="background-color:  #FF0000; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+        <div class="card-body">
+            <h5 class="card-title text-center" style="color: #fff; font-size: 16px;">Pending</h5>
+            <p class="card-text text-center" style="font-size: 36px; font-weight: 900; color: #fff;">@Model.PendingInQc</p>
+        </div>
+    </div>
+</a>
+
+<a asp-area="" asp-controller="Dashboard" asp-action="TestBatchList" class="col" style="text-decoration: none; color: #333;">
+    <div class="card" style="background-color:  #05c402; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+        <div class="card-body">
+            <h5 class="card-title text-center" style="color: #fff; font-size: 16px;">Completed</h5>
+            <p class="card-text text-center" style="font-size: 36px; font-weight: 900; color: #fff;">@Model.PendingInQc</p>
+        </div>
+    </div>
+</a>
+    </div>
+</section>
+}

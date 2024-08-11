@@ -3,61 +3,88 @@
 @{
     ViewData["Title"] = "Test Batch List";
     Layout = "_Layout";
-    string Role= (string)Context.Session.GetString("userRole");
-
+    string Role = (string)Context.Session.GetString("userRole");
 }
 
-<h2 class="text-center">@ViewData["Title"]</h2>
+<div class="container-fluid" style="margin-top: 20px;">
+    <div class="card">
+        <div class="card-header text-center">
+            <h2 class="mb-0">@ViewData["Title"]</h2>
+        </div>
+        <div class="card-body">
+            @if (@TempData["Message"] != null)
+            {
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    @TempData["Message"]
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            }
+            <table id="lineItemsTable" class="table table-bordered mt-3" style="width: 100%; table-layout: fixed;">
+                <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">Sr No.</th>
+                        <th scope="col">Ref No.</th>
+                        <th scope="col">Purpose of Testing</th>
+                        <th scope="col">Plant</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
 
-@if (@TempData["Message"] != null)
-{
-    <div class="alert alert-warning alert-dismissible fade show" role="alert">
-        @TempData["Message"]
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-}
-
-<table id="lineItemsTable" class="table table-striped table-bordered table-hover mt-3">
-    <thead class="thead-dark">
-        <tr>
-            <th scope="col">Sr No.</th>
-            <th scope="col">Ref No.</th>
-            <th scope="col">Purpose of Testing</th>
-            <th scope="col">Plant</th>
-            <th scope="col">Status</th>
-            <th scope="col">Action</th>
-        </tr>
-    </thead>
-    <tbody>
-    </tbody>
-</table>
-
-<!-- Modal -->
-<div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="confirmationModalLabel">Confirmation</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                @using (Html.BeginForm("ConfirmSendForApproval", "Dashboard", FormMethod.Post))
-                {
-                    <input type="hidden" id="refNo" name="RefNo" />
-                    <div class="alert alert-warning">
-                        Are you sure you want to send this batch for approval?
+            <!-- Modal -->
+            <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="confirmationModalLabel">Confirmation</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            @using (Html.BeginForm("ConfirmSendForApproval", "Dashboard", FormMethod.Post))
+                            {
+                                <input type="hidden" id="refNo" name="RefNo" />
+                                <div class="alert alert-warning">
+                                    Are you sure you want to send this batch for approval?
+                                </div>
+                                <button type="submit" class="btn btn-primary">Yes, send for approval</button>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">No, cancel</button>
+                            }
+                        </div>
                     </div>
-                    <button type="submit" class="btn btn-primary">Yes, send for approval</button>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">No, cancel</button>
-                }
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+    .main-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #f9f9f9; /* add a light gray background color */
+    }
+
+    .card {
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* add a subtle box shadow */
+    }
+
+    .card-header {
+        background-color: #337ab7; /* add a blue background color to the card header */
+        color: #ffffff; /* add white text color to the card header */
+    }
+
+    .card-body {
+        padding: 20px; /* add some padding to the card body */
+    }
+</style>
 
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
@@ -96,13 +123,13 @@
                 '</td><td>' +
                 '<input type="hidden" value="' + ListOfBatch[i].id + '"/>' +
                 ("@Role" == "Initiator" ?
-                '<a href="' + editUrl + '?RefNo=' + ListOfBatch[i].refNo + '" class="btn btn-sm btn-primary">Edit</a>' :
+                '<a href="' + editUrl + '?RefNo=' + ListOfBatch[i].refNo + '" class="btn btn-sm btn-primary" title="Edit this batch">Edit</a>' :
                 ( "@Role" == "QC" ?
-                '<a href="' + viewUrl + '?RefNo=' + ListOfBatch[i].refNo + '" class="btn btn-sm btn-info">View</a>' :
+                '<a href="' + viewUrl + '?RefNo=' + ListOfBatch[i].refNo + '" class="btn btn-sm btn-info" title="View this batch" >View</a>' :
                 '<a href="#" class="btn btn-sm btn-secondary disabled" >Edit</a>')) +
                 '&nbsp;&nbsp;' +
                 (ListOfBatch[i].status == "pending"?
-                    '<a href="' + sendForApprovalUrl + '?RefNo=' + ListOfBatch[i].refNo + '" class="btn btn-sm btn-warning">' +
+                    '<a href="' + sendForApprovalUrl + '?RefNo=' + ListOfBatch[i].refNo + '" class="btn btn-sm btn-warning" title="Send this batch for approval">' +
                     '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check" viewBox="0 0 16 16">' +
                     '<path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z"/>' +
                     '</svg></a>' :
@@ -112,7 +139,7 @@
                     '</svg></a>') +
                 '&nbsp;&nbsp;' +
                 ("@Role" != "Initiator"?
-                    '<a href="' + sendBackUrl + '?RefNo=' + ListOfBatch[i].refNo + '" class="btn btn-sm btn-danger">' +
+                    '<a href="' + sendBackUrl + '?RefNo=' + ListOfBatch[i].refNo + '" class="btn btn-sm btn-danger" title="Send this batch back">' +
                     '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-return-left" viewBox="0 0 16 16">'+
   '<path fill-rule="evenodd" d="M14.5 1.5a.5.5 0 0 1 .5.5v4.8a2.5 2.5 0 0 1-2.5 2.5H2.707l3.347 3.346a.5.5 0 0 1-.708.708l-4.2-4.2a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 8.3H12.5A1.5 1.5 0 0 0 14 6.8V2a.5.5 0 0 1 .5-.5"/>'+
 '</svg></a>' :
