@@ -8,9 +8,10 @@
 
 <div class="container-fluid" style="margin-top: 20px;">
     <div class="card">
-        <div class="card-header text-center">
-            <h2 class="mb-0">@ViewData["Title"]</h2>
-        </div>
+<div class="card-header text-center">
+<h2 class="mb-0">@ViewData["Title"] @if (!string.IsNullOrEmpty(Model.RefNo)) { <span>- RefNo: @Model.RefNo</span> }</h2>
+
+</div>
         <div class="card-body">
             <form asp-action="SubmitTestForm" method="post">
                 <div class="row">
@@ -80,6 +81,11 @@
                 }
                 else if(Role == "QC")
                 {
+                <button id="backButton" type="button" class="btn btn-secondary" onclick="backButtonClicked()">
+                    Back
+                </button>
+                }
+                @*
                     <div>
 <button type="button" class="btn btn-sm btn-warning" id="sendForApprovalButton">
     Send for Approval
@@ -138,6 +144,8 @@
     </div>
 </div>
                 }
+             *@
+            
             </form>
         </div>
     </div>
