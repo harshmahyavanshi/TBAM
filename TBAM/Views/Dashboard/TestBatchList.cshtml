@@ -124,7 +124,7 @@
                 '<input type="hidden" value="' + ListOfBatch[i].id + '"/>' +
                 ("@Role" == "Initiator" && ListOfBatch[i].status == "Pending"?
                 '<a href="' + editUrl + '?RefNo=' + ListOfBatch[i].refNo + '" class="btn btn-sm btn-primary" title="Edit this batch">Edit</a>' :
-                ( "@Role" == "QC" && ListOfBatch[i].status == "Pending"?
+                ( "@Role" != "Initiator" && ListOfBatch[i].status == "Pending"?
                 '<a href="' + viewUrl + '?RefNo=' + ListOfBatch[i].refNo + '" class="btn btn-sm btn-info" title="View this batch" >View</a>' :
                 ("@Role" == "Initiator" && ListOfBatch[i].status == "Completed"?
                 '<a href="#" class="btn btn-sm btn-secondary disabled" >Edit</a>':

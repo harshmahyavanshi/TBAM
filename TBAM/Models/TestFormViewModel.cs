@@ -35,6 +35,8 @@ public class LineItem
     public required int Quantity { get; set; }
     public string? BatchNumber { get; set; }
     public required string Remarks { get; set; }
+
+    public int? Cost {get; set;}
 }
 
 public class DashboardViewModel

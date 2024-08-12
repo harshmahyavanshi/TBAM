@@ -46,16 +46,20 @@
 
                 <h3 class="mt-4">Line Items</h3>
                 <table id="lineItemsTable" class="table table-bordered mt-3" style="width: 100%;     table-layout: fixed;">
-                    <thead class="thead-light">
+                    <thead class="thead-light ">
                         <tr>
-                            <th>Product Code</th>
-                            <th>Product Name</th>
-                            <th>Workcentre</th>
-                            <th>Quantity</th>
-                            <th>Remarks</th>
+                            <th class="text-center">Product Code</th>
+                            <th class="text-center">Product Name</th>
+                            <th class="text-center">Workcentre</th>
+                            <th class="text-center">Quantity</th>
+                            <th class="text-center">Remarks</th>
+                            @if (Role == "Costing")
+                            {
+                                <th class="text-center">Cost</th>
+                            }
                             @if (Role == "Initiator")
                             {
-                                <th>Actions</th>
+                                <th class="text-center">Actions</th>
                             }
                         </tr>
                     </thead>
@@ -69,7 +73,9 @@
                 
 
                 <hr />
- 
+                }
+                @if(Role == "Costing" || Role == "Initiator")
+                {
                     <button id="backButton" type="button" class="btn btn-secondary"
                             onclick="backButtonClicked()">
                         Back
@@ -79,7 +85,7 @@
                         Save
                     </button>
                 }
-                else if(Role == "QC")
+                @if(Role == "QC")
                 {
                 <button id="backButton" type="button" class="btn btn-secondary" onclick="backButtonClicked()">
                     Back
@@ -262,6 +268,12 @@
         @:'</td><td>' +
         @:'<input type="text" value="' + lineItem.remarks + '" name="LineItems[' + index + '].Remarks" class="form-control" required/>' +
         @:'</td>' +
+        @if (Role == "Costing")
+        {
+            @:'<td>'+
+            @:'<input type="number" value="' + lineItem.cost + '" name="LineItems[' + index + '].Cost" class="form-control" required/>' +
+            @:'</td>'+
+        }
         @if (Role == "Initiator")
         {
             @:'<td>'+
@@ -330,11 +342,15 @@
             return false;
         });
 
-        @if (Role != "Initiator")
-        {
-            @:$('select[name^="LineItems"], input[name^="LineItems"]').attr('disabled', 'disabled');
-            @:$('button.btn-danger').hide();
-        }
+@if (Role == "Costing")
+{
+    @:$('select:not([name^=".Cost"]), input:not([name^="LineItems"][name$="Cost"]), textarea').addClass('btn btn-sm disabled');
+    @:$('button:not([type="submit"]):not([id="backButton"])').addClass('btn btn-sm  disabled');
+}
+else if (Role != "Initiator")
+{
+    @:$('select, textarea ,input,button:not([type="submit"]):not([id="backButton"])').addClass('btn btn-sm disabled');
+}
 
 $(document).on('click', '#sendForApprovalButton', function () {
     $('#confirmationModal').modal('show');

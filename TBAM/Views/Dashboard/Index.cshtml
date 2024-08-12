@@ -10,7 +10,7 @@
 
 @if(Role == "Admin")
 {
-<section class="container p-3" style="margin-top: 20px; background-color: #f7f7f7; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+<section class="container p-3" style="padding-bottom:30px; margin-top: 20px; background-color: #f7f7f7; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
     <div class="card-text text-center p-3 line" style="font-size: 20px; font-weight: 500; text-decoration: underline; color: #333;">Welcome! @fullName</div>
     <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-4">
         <!-- LUP START -->
@@ -53,27 +53,52 @@
 </section>
 }
 else{
-<section class="container p-6" style="margin-left:250px; margin-top: 150px; background-color: #f7f7f7; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
-    <div class="card-text text-center p-3 line" style="font-size: 20px; font-weight: 500; text-decoration: underline; color: #333;">Welcome! @fullName</div>
-    <div class="row row-cols-2 row-cols-md-3 row-cols-lg-2 g-4">
-        <!-- LUP START -->
-        <a asp-area="" asp-controller="Dashboard" asp-action="TestBatchList" asp-route-Filter="Pending" class="col" style="text-decoration: none; color: #333;">
-    <div class="card" style="background-color:  #FF0000; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
-        <div class="card-body">
-            <h5 class="card-title text-center" style="color: #fff; font-size: 16px;">Pending</h5>
-            <p class="card-text text-center" style="font-size: 36px; font-weight: 900; color: #fff;">@Model.PendingCount</p>
-        </div>
-    </div>
-</a>
 
-<a asp-area="" asp-controller="Dashboard" asp-action="TestBatchList" asp-route-Filter="Completed" class="col" style="text-decoration: none; color: #333;">
-    <div class="card" style="background-color:  #05c402; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
-        <div class="card-body">
-            <h5 class="card-title text-center" style="color: #fff; font-size: 16px;">Completed</h5>
-            <p class="card-text text-center" style="font-size: 36px; font-weight: 900; color: #fff;">@Model.CompletedCount</p>
+    <section class="container p-6" style="padding-bottom:30px; margin-top: 20px; ">
+        <div class="text-left py-3 pr-3 line" style="font-size: 30px; font-weight: 600; color: #333;"><h1>Welcome, </h1><h4 style="color:#aeaeae">@fullName </h4></div>
+            <div class="row row-cols-4 row-cols-md-3 row-cols-lg-3 g-4">
+            <!-- LUP START -->
+            <a asp-area="" asp-controller="Dashboard" asp-action="TestBatchList" asp-route-Filter="Pending" class="col" style="text-decoration: none; color: #333;">
+                <div class="border border-danger" style="background-color: #fff; border-radius: 10px; padding: 20px; width: 250px;">
+                    <h5 class="text-center" style="color: #666; font-size: 16px;">Pending</h5>
+                    <p class="text-center" style="font-size: 36px; font-weight: 900; color: #333;">@Model.PendingCount</p>
+                </div>
+            </a>
+
+            <a asp-area="" asp-controller="Dashboard" asp-action="TestBatchList" asp-route-Filter="Completed" class="col" style="text-decoration: none; color: #333;">
+                <div class="border border-success" style="background-color: #fff; border-radius: 10px; padding: 20px; width: 250px; margin-left: 75px;">
+                    <h5 class="text-center" style="color: #666; font-size: 16px;">Completed</h5>
+                    <p class="text-center" style="font-size: 36px; font-weight: 900; color: #333;">@Model.CompletedCount</p>
+                </div>
+            </a>
         </div>
-    </div>
-</a>
-    </div>
-</section>
+    </section>
+
 }
+
+<style type="text/css">
+.customshadow {
+    transition: box-shadow 0.3s ease;
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* add a basic shadow effect */
+}
+
+.customshadow:hover {
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3); /* increase the shadow effect on hover */
+    background-color: #fff;
+    border-color: #fff;
+}
+
+.customshadow.border-danger {
+    border-color: #dc3545;
+}
+
+.customshadow.border-success {
+    border-color: #28a745;
+}
+
+.customshadow:hover .card-title, .customshadow:hover .card-text {
+    color: #fff;
+}
+        </style>

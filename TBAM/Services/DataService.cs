@@ -100,6 +100,7 @@ public class DataService
                 Workcentre = item.Workcentre,
                 Remarks = item.Remarks,
                 CreatedBy = (int)userId,
+                Cost = item.Cost
             };
 
 
@@ -192,7 +193,8 @@ public class DataService
                 ProductName = testBatchItem.ProductName,
                 Workcentre = testBatchItem.Workcentre,
                 Quantity = testBatchItem.Quantity,
-                Remarks = testBatchItem.Remarks
+                Remarks = testBatchItem.Remarks,
+                Cost = testBatchItem.Cost
             };
 
             listOfLineItem.Add(lineItem);
@@ -329,7 +331,7 @@ public class DataService
             }
             else
             {
-                var completedTestBatch = _context.TestBatch.Select(p => p).Where(p => p.IsDeleted == false && p.Refno == RefNo && p.Status.Equals("Completed")).FirstOrDefault();
+                var completedTestBatch = _context.TestBatch.Select(p => p).Where(p => p.IsDeleted == false && p.Refno == RefNo && p.ApproveLevel == approver && p.Status.Equals("Completed")).FirstOrDefault();
                 var pendingApproverTestBatch = _context.TestBatch.Select(p => p).Where(p => p.IsDeleted == false && p.Refno == RefNo && p.Status.Equals("Pending") && p.ApproveLevel == Role.Id).FirstOrDefault();
 
                 completedTestBatch.Status = "Pending";
