@@ -16,6 +16,10 @@ namespace TBAM.Models
         public string Filter { get; set; }
         public List<TestBatchModel> ListOfBatch { get; set; }
         public int Count { get; set; }
+
+        public int CompletedCount {get; set;}
+        public int PendingCount {get; set;}
+
     }
     public class TestBatchModel
     {
@@ -25,6 +29,8 @@ namespace TBAM.Models
         public int Plant { get; set; }
         public string TestDetails { get; set; }
         public string Status { get; set; }
+
+
     }
 
     public class ConfirmSendForApprovalViewModel

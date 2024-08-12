@@ -196,6 +196,7 @@ namespace TBAM.Models
         public int ApproveLevel { get; set; }
 
         public required string Status { get; set; }
+
     }
     public class TestBatchItem
     {

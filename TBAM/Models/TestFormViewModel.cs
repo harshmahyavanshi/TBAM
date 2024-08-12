@@ -43,6 +43,12 @@ public class DashboardViewModel
     public int PendingInQc { get; set; }
     public int PendingInAccounts { get; set; }
     public int PendingInProduction { get; set; }
+
+    public int PendingCount {get; set;}
+    public int CompletedCount {get; set;}
+
+    public string Filter {get; set;}
+
 }
 
 }

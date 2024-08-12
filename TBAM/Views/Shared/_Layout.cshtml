@@ -7,6 +7,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8" />
+    
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - TBAM</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
@@ -14,8 +15,9 @@
     <link rel="stylesheet" href="~/TBAM.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
     <style>
-        body {
-        }
+body {
+  overflow-x: hidden;
+}
 
         .sidebar {
             position: fixed;
@@ -30,6 +32,7 @@
             border-right: 1px solid rgba(0, 0, 0, 0.1);
             transition: all 0.2s ease-in-out;
             width: 200px;
+            max-height: 100vh;
         }
 
         .sidebar .nav-link {
@@ -53,34 +56,60 @@
             margin: 0 auto;
             padding: 20px;
         }
+.sidebar .navbar-brand img {
+    width: 100%;
+    height: 100px; /* adjust the height as needed */
+    border: none;
+    box-shadow: none;
+    transition: transform 0.2s ease-in-out;
+    margin-left: 0;
+    border-radius: 0;
+}
+
+.sidebar .navbar-brand img:hover {
+    transform: scale(1.1);
+}
+.sidebar-footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 10px;
+    background-color: #343a40;
+}
+
     </style>
 </head>
 <body>
     <div class="d-flex">
-        <div class="sidebar">
+<div class="sidebar">
+    <ul class="nav flex-column">
+        <li class="nav-item">
             <a class="navbar-brand d-flex align-items-center mb-3" asp-area="" asp-controller="Dashboard" asp-action="Index">
-                <i class="fas fa-cogs fa-2x mr-2"></i>
-                <span class="sidebar-brand-text">TBAM</span>
+                <img src="~/assets/Meril.jpg" alt="Meril Logo" width="200" height="200"  />
             </a>
-            <div class="d-flex align-items-center mb-3">
-                <i class="fas fa-user-circle fa-2x text-light mr-2"></i>
-                <span class="navbar-text text-light">@fullName</span>
-            </div>
-            <ul class="nav flex-column">
-                <li class="nav-item">
-                    @if (Role == "Initiator") // assuming QC role ID is 2
-                    {
-                        <a class="nav-link text-light" asp-area="" asp-controller="Dashboard" asp-action="CreateTestBatch"><i class="fas fa-plus-circle"></i> New Test Batch</a>
-                    }
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-light" asp-area="" asp-controller="Dashboard" asp-action="TestBatchList"><i class="fas fa-list-alt"></i> Test Batch List</a>
-                </li>
-            </ul>
-            <div class="mt-auto">
-                <a class="nav-link text-light" asp-area="" asp-controller="Dashboard" asp-action="Logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
-            </div>
-        </div>
+        </li>
+
+        <li class="nav-item">
+            @if (Role == "Initiator") // assuming QC role ID is 2
+            {
+                <a class="nav-link text-light" asp-area="" asp-controller="Dashboard" asp-action="CreateTestBatch"><i class="fas fa-plus-circle"></i> New Test Batch</a>
+            }
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-light" asp-area="" asp-controller="Dashboard" asp-action="TestBatchList"><i class="fas fa-list-alt"></i> Test Batch List</a>
+        </li>
+    </ul>
+    <div class="sidebar-footer">
+        <li class="nav-item">
+    <a class="nav-link text-light" href="#">
+        <i class="fas fa-user-circle fa-2x text-light mr-2"></i>
+        <span class="navbar-text text-light">@fullName.Split(' ')[0]</span>
+    </a>
+</li>
+        <a class="nav-link text-light" asp-area="" asp-controller="Dashboard" asp-action="Logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+    </div>
+</div>
         <div class="content-wrapper">
             <div class="container">
                 <main role="main" class="pb-3">

@@ -122,13 +122,15 @@
                 '<input type="text" name="Model.Status" value="' + ListOfBatch[i].status + '" class="form-control-plaintext" readonly />  ' +
                 '</td><td>' +
                 '<input type="hidden" value="' + ListOfBatch[i].id + '"/>' +
-                ("@Role" == "Initiator" ?
+                ("@Role" == "Initiator" && ListOfBatch[i].status == "Pending"?
                 '<a href="' + editUrl + '?RefNo=' + ListOfBatch[i].refNo + '" class="btn btn-sm btn-primary" title="Edit this batch">Edit</a>' :
-                ( "@Role" == "QC" ?
+                ( "@Role" == "QC" && ListOfBatch[i].status == "Pending"?
                 '<a href="' + viewUrl + '?RefNo=' + ListOfBatch[i].refNo + '" class="btn btn-sm btn-info" title="View this batch" >View</a>' :
-                '<a href="#" class="btn btn-sm btn-secondary disabled" >Edit</a>')) +
+                ("@Role" == "Initiator" && ListOfBatch[i].status == "Completed"?
+                '<a href="#" class="btn btn-sm btn-secondary disabled" >Edit</a>':
+                '<a href="#" class="btn btn-sm btn-secondary disabled" >View</a>'))) +
                 '&nbsp;&nbsp;' +
-                (ListOfBatch[i].status == "pending"?
+                (ListOfBatch[i].status == "Pending"?
                     '<a href="' + sendForApprovalUrl + '?RefNo=' + ListOfBatch[i].refNo + '" class="btn btn-sm btn-warning" title="Send this batch for approval">' +
                     '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check" viewBox="0 0 16 16">' +
                     '<path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z"/>' +
@@ -138,12 +140,13 @@
                     '<path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z"/>' +
                     '</svg></a>') +
                 '&nbsp;&nbsp;' +
-                ("@Role" != "Initiator"?
+                ("@Role" != "Initiator" && ListOfBatch[i].status == "Pending"?
                     '<a href="' + sendBackUrl + '?RefNo=' + ListOfBatch[i].refNo + '" class="btn btn-sm btn-danger" title="Send this batch back">' +
                     '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-return-left" viewBox="0 0 16 16">'+
   '<path fill-rule="evenodd" d="M14.5 1.5a.5.5 0 0 1 .5.5v4.8a2.5 2.5 0 0 1-2.5 2.5H2.707l3.347 3.346a.5.5 0 0 1-.708.708l-4.2-4.2a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 8.3H12.5A1.5 1.5 0 0 0 14 6.8V2a.5.5 0 0 1 .5-.5"/>'+
 '</svg></a>' :
-                    '') +
+                '' 
+                ) +
                 '</td></tr>').prependTo('#lineItemsTable tbody');
             TestBatchListCount++;
         }

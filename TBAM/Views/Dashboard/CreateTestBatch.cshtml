@@ -78,6 +78,66 @@
                         Save
                     </button>
                 }
+                else if(Role == "QC")
+                {
+                    <div>
+<button type="button" class="btn btn-sm btn-warning" id="sendForApprovalButton">
+    Send for Approval
+</button>
+<button type="button" class="btn btn-sm btn-danger" id="sendBackButton">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-return-left" viewBox="0 0 16 16">
+        <path fill-rule="evenodd" d="M14.5 1.5a.5.5 0 0 1 .5.5v4.8a2.5 2.5 0 0 1-2.5 2.5H2.707l3.347 3.346a.5.5 0 0 1-.708.708l-4.2-4.2a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 8.3H12.5A1.5 1.5 0 0 0 14 6.8V2a.5.5 0 0 1 .5-.5" />
+    </svg>
+</button>
+                    </div>
+                     
+                     
+                      <!-- Modal -->
+                        <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="confirmationModalLabel">Confirmation</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        @using (Html.BeginForm("ConfirmSendForApproval", "Dashboard", FormMethod.Post))
+                                        {
+                                            <input type="hidden" id="refNo" name="RefNo" />
+                                            <div class="alert alert-warning">
+                                                Are you sure you want to send this batch for approval?
+                                            </div>
+                                            <button type="submit" class="btn btn-primary">Yes, send for approval</button>
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">No, cancel</button>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Modal -->
+<div class="modal fade" id="sendBackConfirmationModal" tabindex="-1" role="dialog" aria-labelledby="sendBackConfirmationModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="sendBackConfirmationModalLabel">Confirmation</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to send this batch back?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">No, cancel</button>
+                <button type="button" class="btn btn-danger" id="confirmSendBackButton">Yes, send back</button>
+            </div>
+        </div>
+    </div>
+</div>
+                }
             </form>
         </div>
     </div>
@@ -267,6 +327,23 @@
             @:$('select[name^="LineItems"], input[name^="LineItems"]').attr('disabled', 'disabled');
             @:$('button.btn-danger').hide();
         }
+
+$(document).on('click', '#sendForApprovalButton', function () {
+    $('#confirmationModal').modal('show');
+});
+    $(document).on('click', '[data-dismiss="modal"]', function (e) {
+        e.preventDefault();
+        $(this).closest('.modal').modal('hide');
+    });
+
+    $(document).on('click', '#sendBackButton', function () {
+    $('#sendBackConfirmationModal').modal('show');
+});
+
+$(document).on('click', '#confirmSendBackButton', function () {
+    // Call the SendBack controller action here
+    window.location.href = '@Url.Action("SendBack", "Dashboard")';
+});
     });
 
     // Add a message "No product added." when no line items are present

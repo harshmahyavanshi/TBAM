@@ -70,7 +70,7 @@ public class DataService
             PlantId = PlantId.FirstOrDefault().Id,
             TestDetails = model.TestDetails,
             CreatedBy = (int)userId,
-            Status = "pending",
+            Status = "Pending",
             ApproveLevel = userRoleId
             
         };
@@ -128,7 +128,7 @@ public class DataService
         var role = _context.Role.Where(r=>r.Id == userRole.RoleId).FirstOrDefault();
 
         var dataList = Filter == null ? await _context.TestBatch.Select(p => p).Where(p => p.IsDeleted == false && p.ApproveLevel == role.Id).ToListAsync() :
-                                        await _context.TestBatch.Select(p => p).Where(p => p.IsDeleted == false && p.Status.Equals(Filter)).ToListAsync();
+                                        await _context.TestBatch.Select(p => p).Where(p => p.IsDeleted == false && p.ApproveLevel == role.Id && p.Status.Equals(Filter)).ToListAsync();
         var listOfBatch = new List<TestBatchModel>();
         // var purposeOfTesting = "Purpose of testing 1";
         // var plant = 2100;
@@ -250,7 +250,7 @@ public class DataService
         return true;
     }
 
-    public async Task<List<TestBatchListModel>> GetDashboardCounts()
+    public async Task<List<TestBatchListModel>> GetDashboardCounts(int userId)
     {
 
         var listOfTestBatchListCount = new List<TestBatchListModel>();
@@ -260,10 +260,15 @@ public class DataService
         foreach (var role in roles)
         {
             var count = await _context.TestBatch.CountAsync(p => p.IsDeleted == false && p.ApproveLevel == role.Id);
+            var completed = await _context.TestBatch.CountAsync(p => p.IsDeleted == false && p.ApproveLevel == role.Id && p.Status.Equals("Completed"));
+            var pending = await _context.TestBatch.CountAsync(p => p.IsDeleted == false && p.ApproveLevel == role.Id && p.Status.Equals("Pending"));
+
             var testBatchList = new TestBatchListModel
             {
                 Filter = role.RoleName,
-                Count = count
+                Count = count,
+                CompletedCount = completed,
+                PendingCount = pending
             };
             listOfTestBatchListCount.Add(testBatchList);
 
@@ -276,7 +281,7 @@ public class DataService
     {
         var role = await _context.Role.Where(r => r.IsDeleted == false && r.RoleName == userRole).ToListAsync();
 
-        var status = await _context.TestBatch.Select(p => p).Where(p => p.IsDeleted == false && p.Refno == RefNo && p.ApproveLevel == role.FirstOrDefault().Id).ToListAsync();
+        var status = await _context.TestBatch.Select(p => p).Where(p => p.IsDeleted == false && p.Refno == RefNo && p.ApproveLevel == role.FirstOrDefault().Id && p.Status.Equals("Pending")).ToListAsync();
 
         if (status.Count != 0)
         {
@@ -286,24 +291,82 @@ public class DataService
         return false;
     }
 
-    public async Task<bool> SendAction(string RefNo, string? userRole, int action)
+    public async Task<bool> SendAction(string RefNo, string? userRole, int? userId, int action)
     {
         var Role = _context.Role.Where(r => r.RoleName == userRole).FirstOrDefault();
         var approver = Role.Id + action;
 
         var role = await _context.Role.Where(r => r.IsDeleted == false && r.Id == approver).ToListAsync();
 
-        var testBatch = _context.TestBatch.Select(p => p).Where(p => p.IsDeleted == false && p.Refno == RefNo).FirstOrDefault();
+        var testBatch = _context.TestBatch.Select(p => p).Where(p => p.IsDeleted == false && p.Refno == RefNo && p.Status.Equals("Pending")).FirstOrDefault();
+
+        var utcDateTimeValue = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Utc);
+
+        //To maintain a history of completed
+        if(Role != null && testBatch != null)
+        {
+            if(action == 1)
+            {
+                //delete the older one
+                testBatch.IsDeleted = true;
+                testBatch.DeletedAt = utcDateTimeValue;
+
+                var newCompletedTestBatch = new TestBatch{
+                    Refno = testBatch.Refno,
+                    PurposesOfTestingId = testBatch.PurposesOfTestingId,
+                    PlantId = testBatch.PlantId,
+                    TestDetails = testBatch.TestDetails,
+                    Status =  "Completed",
+                    ApproveLevel = Role.Id,
+                    CreatedAt = utcDateTimeValue,
+                    CreatedBy = testBatch.CreatedBy,
+                    ApprovedBy  = (int)userId
+                };
+
+                _context.TestBatch.Add(newCompletedTestBatch);
+
+                await _context.SaveChangesAsync();
+            }
+            else
+            {
+                var completedTestBatch = _context.TestBatch.Select(p => p).Where(p => p.IsDeleted == false && p.Refno == RefNo && p.Status.Equals("Completed")).FirstOrDefault();
+                var pendingApproverTestBatch = _context.TestBatch.Select(p => p).Where(p => p.IsDeleted == false && p.Refno == RefNo && p.Status.Equals("Pending") && p.ApproveLevel == Role.Id).FirstOrDefault();
+
+                completedTestBatch.Status = "Pending";
+                pendingApproverTestBatch.IsDeleted = true;
+                pendingApproverTestBatch.DeletedAt = utcDateTimeValue;
+
+                _context.TestBatch.Update(completedTestBatch);
+
+                _context.TestBatch.Update(pendingApproverTestBatch);
+
+
+                await _context.SaveChangesAsync();
+
+                return true;
+                
+            }
+        }
 
         //fill TestBatch model
 
-        if (role.Count > 0)
+        if (role.Count > 0 && testBatch != null)
         {
-            testBatch.Status = "pending";
-            testBatch.ApproveLevel = (int)approver;
-            _context.TestBatch.Update(testBatch);
+            var newTestBatch = new TestBatch{
+                Refno = testBatch.Refno,
+                PurposesOfTestingId = testBatch.PurposesOfTestingId,
+                PlantId = testBatch.PlantId,
+                TestDetails = testBatch.TestDetails,
+                Status = "Pending",
+                ApproveLevel = (int)approver,
+                CreatedAt = utcDateTimeValue,
+                CreatedBy = testBatch.CreatedBy,
+                ApprovedBy = (int)userId
+            };
 
-            await _context.SaveChangesAsync();
+                _context.TestBatch.Add(newTestBatch);
+
+                await _context.SaveChangesAsync();
 
             return true;
         }
