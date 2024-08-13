@@ -136,8 +136,14 @@ namespace TBAM.Controllers
 
                 if (isSentForApproval)
                     TempData["Message"] = model.RefNo + " Test batch sent for approval successfully!";
+                else if(userRoleId == "Manufacturing Head" )
+                {
+                    TempData["Message"] = model.RefNo + " Test batch completed successfully!";
+                }
                 else
                     TempData["Message"] = model.RefNo + " Test batch not sent for approval!";
+
+                
 
                 return RedirectToAction("TestBatchList", "Dashboard");
             }

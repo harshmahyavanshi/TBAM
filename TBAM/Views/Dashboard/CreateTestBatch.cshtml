@@ -48,18 +48,18 @@
                 <table id="lineItemsTable" class="table table-bordered mt-3" style="width: 100%;     table-layout: fixed;">
                     <thead class="thead-light ">
                         <tr>
-                            <th class="text-center">Product Code</th>
-                            <th class="text-center">Product Name</th>
-                            <th class="text-center">Workcentre</th>
-                            <th class="text-center">Quantity</th>
-                            <th class="text-center">Remarks</th>
+                            <th >Product Code</th>
+                            <th >Product Name</th>
+                            <th >Workcentre</th>
+                            <th >Quantity</th>
+                            <th >Remarks</th>
                             @if (Role == "Costing" || Role == "Manufacturing Head")
                             {
-                                <th class="text-center">Cost</th>
+                                <th >Cost</th>
                             }
                             @if (Role == "Initiator")
                             {
-                                <th class="text-center">Actions</th>
+                                <th >Actions</th>
                             }
                         </tr>
                     </thead>
@@ -194,7 +194,7 @@
     #lineItemsTable th, #lineItemsTable td {
         border: 1px solid #ddd;
         padding: 10px;
-        text-align: left;
+        text-align: center;
     }
 
     #lineItemsTable th {
