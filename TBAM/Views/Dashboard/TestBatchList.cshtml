@@ -46,7 +46,23 @@
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
-                        <div class="modal-body">
+                        @if(Role == "Manufacturing Head")
+                        {
+                            <div class="modal-body">
+                            @using (Html.BeginForm("ConfirmSendForApproval", "Dashboard", FormMethod.Post))
+                            {
+                                <input type="hidden" id="refNo" name="RefNo" />
+                                <div class="alert alert-warning">
+                                    Are you sure you want to complete this batch?
+                                </div>
+                                <button type="submit" class="btn btn-primary">Yes, complete</button>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">No, cancel</button>
+                            }
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="modal-body">
                             @using (Html.BeginForm("ConfirmSendForApproval", "Dashboard", FormMethod.Post))
                             {
                                 <input type="hidden" id="refNo" name="RefNo" />
@@ -57,6 +73,7 @@
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">No, cancel</button>
                             }
                         </div>
+                        }
                     </div>
                 </div>
             </div>
@@ -91,10 +108,11 @@
         border-collapse: collapse;
     }
 
-    #lineItemsTable th, #lineItemsTable td, #lineItemsTable td {
+    #lineItemsTable th, #lineItemsTable td{
         border: 1px solid #ddd;
         padding: 10px;
         text-align: center;
+        align-content: center;
     }
 
     #lineItemsTable th {
