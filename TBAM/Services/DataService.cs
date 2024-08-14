@@ -208,7 +208,7 @@ public class DataService
         var isTestBatchItemUpdated = await UpdateTestBatchItem(RefNo, userId);
 
 
-        var dataList = _context.TestBatch.Select(p => p).Where(p => p.Refno == RefNo && p.IsDeleted == false).ToList();
+        var dataList = _context.TestBatch.Select(p => p).Where(p => p.Refno == RefNo && p.IsDeleted == false && p.Status == "Pending").ToList();
         var utcDateTimeValue = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Utc);
 
         foreach (var testbatch in dataList)
