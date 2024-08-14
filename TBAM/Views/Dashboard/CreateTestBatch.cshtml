@@ -19,7 +19,7 @@
                         <div class="form-group">
                             <input type="hidden" name="RefNo" class="form-control" required />
                             <label for="PurposeOfTesting">Purpose of Testing</label>
-                            <select id="PurposeOfTesting" name="PurposesOfTesting[0]" class="form-control" @(Role == "QC"  || Role == "Costing" || Role == "Manufacturing Head"? "readonly" : "")>
+                            <select id="PurposeOfTesting" name="PurposesOfTesting[0]" class="form-control" @(Role == "QC"  || Role == "Costing" || Role == "Manufacturing Head" || Role == "SAP"? "readonly" : "")>
                                 @foreach (var purpose in Model.PurposesOfTesting)
                                 {
                                     <option value="@purpose">@purpose</option>
@@ -30,7 +30,7 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="Plant">Plant</label>
-                            <select id="Plant" name="Plants[0]" class="form-control" @(Role == "QC"  || Role == "Costing" || Role == "Manufacturing Head"? "readonly" : "")>
+                            <select id="Plant" name="Plants[0]" class="form-control" @(Role == "QC"  || Role == "Costing" || Role == "Manufacturing Head" || Role == "SAP"? "readonly" : "")>
                                 @foreach (var plant in Model.Plants)
                                 {
                                     <option value="@plant">@plant</option>
@@ -41,7 +41,7 @@
                 </div>
                 <div class="form-group">
                     <label for="TestDetails">Test Details</label>
-                    <textarea id="TestDetails" name="TestDetails" class="form-control" required @(Role == "QC" || Role == "Costing" || Role == "Manufacturing Head"? "readonly" : "")></textarea>
+                    <textarea id="TestDetails" name="TestDetails" class="form-control" required @(Role == "QC" || Role == "Costing" || Role == "Manufacturing Head" || Role == "SAP"? "readonly" : "")></textarea>
                 </div>
 
                 <h3 class="mt-4">Line Items</h3>
@@ -53,9 +53,13 @@
                             <th >Workcentre</th>
                             <th >Quantity</th>
                             <th >Remarks</th>
-                            @if (Role == "Costing" || Role == "Manufacturing Head")
+                            @if (Role == "Costing" || Role == "Manufacturing Head" || Role == "SAP")
                             {
                                 <th >Cost</th>
+                            }
+                            @if (Role == "SAP")
+                            {
+                                <th >Batch</th>
                             }
                             @if (Role == "Initiator")
                             {
@@ -77,7 +81,7 @@
                 <button id="backButton" type="button" class="btn btn-secondary" onclick="backButtonClicked()">
                     Back
                 </button>
-                @if(Role == "Costing" || Role == "Initiator")
+                @if(Role == "Costing" || Role == "Initiator" || Role == "SAP")
                 {
                     @* <button id="backButton" type="button" class="btn btn-secondary"
                             onclick="backButtonClicked()">
@@ -250,6 +254,7 @@
     @if (Model.LineItems != null && Model.LineItems.Count > 0)
     {
         @:var lineItems = @Html.Raw(Json.Serialize(Model.LineItems));
+        @:console.log(JSON.stringify(lineItems)," lineItems")
         @:lineItems.forEach(function (lineItem, index) {
         @:var productOptions = Object.keys(productCodeToNameMap).map(code => `<option value="${code}" ${code === lineItem.productCode ? 'selected' : ''}>${code}</option>`).join('');
         @:var productNameOptions = Object.keys(productCodeToNameMap).map(code => `<option value="${productCodeToNameMap[code]}" ${productCodeToNameMap[code] === lineItem.productName ? 'selected' : ''}>${productCodeToNameMap[code]}</option>`).join('');
@@ -269,10 +274,16 @@
         @:'</td><td>' +
         @:'<input type="text" value="' + lineItem.remarks + '" name="LineItems[' + index + '].Remarks" class="form-control" required/>' +
         @:'</td>' +
-        @if (Role == "Costing" || Role == "Manufacturing Head")
+        @if (Role == "Costing" || Role == "Manufacturing Head" || Role == "SAP")
         {
             @:'<td>'+
             @:'<input type="number" value="' + lineItem.cost + '" name="LineItems[' + index + '].Cost" min="0" class="form-control" required/>' +
+            @:'</td>'+
+        }
+        @if (Role == "SAP")
+        {
+            @:'<td>'+
+            @:'<input type="text" value="' + lineItem.batchNumber + '" name="LineItems[' + index + '].BatchNumber" class="form-control" required/>' +
             @:'</td>'+
         }
         @if (Role == "Initiator")
@@ -343,9 +354,13 @@
             return false;
         });
 
-@if (Role == "Costing")
+@if (Role == "Costing" )
 {
     @:$('select, textarea ,input:not([name$="Cost"]),button:not([type="submit"]):not([id="backButton"])').addClass('btn btn-sm disabled');
+}
+else if (Role == "SAP" )
+{
+    @:$('select, textarea ,input:not([name$="BatchNumber"]),button:not([type="submit"]):not([id="backButton"])').addClass('btn btn-sm disabled');
 }
 else if (Role != "Initiator")
 {

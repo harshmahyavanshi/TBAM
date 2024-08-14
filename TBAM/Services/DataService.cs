@@ -100,7 +100,8 @@ public class DataService
                 Workcentre = item.Workcentre,
                 Remarks = item.Remarks,
                 CreatedBy = (int)userId,
-                Cost = item.Cost
+                Cost = item.Cost,
+                BatchNumber = item.BatchNumber
             };
 
 
@@ -194,7 +195,8 @@ public class DataService
                 Workcentre = testBatchItem.Workcentre,
                 Quantity = testBatchItem.Quantity,
                 Remarks = testBatchItem.Remarks,
-                Cost = testBatchItem.Cost
+                Cost = testBatchItem.Cost,
+                BatchNumber = testBatchItem.BatchNumber ?? ""
             };
 
             listOfLineItem.Add(lineItem);

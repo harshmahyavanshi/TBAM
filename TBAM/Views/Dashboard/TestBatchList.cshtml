@@ -118,6 +118,7 @@
     #lineItemsTable th {
         background-color: #f0f0f0;
     }
+    #lineItemsTable td input{text-align: center;}
 </style>
 
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
@@ -136,6 +137,7 @@
 
         for (var i = 0; i < ListOfBatch.length; i++) {
             console.log("ListOfBatch[i].RefNo ", JSON.stringify(ListOfBatch[i]))
+            var serialNo = ListOfBatch.length - i;
             var editUrl = '@Url.Action("EditTestBatch", "Dashboard")';
             var viewUrl = '@Url.Action("EditTestBatch", "Dashboard")'; // new URL for view
 
@@ -144,8 +146,8 @@
             var sendBackUrl = '@Url.Action("SendBack", "Dashboard")';
 
 
-            $('<tr id="lineItemRow' + i + '"><td>' +
-                '  <label for="html">' + TestBatchListCount + '</label><br>' +
+            $('<tr id="lineItemRow' + i + '"><td style="width:10px;">' +
+                '  <label for="html">' +serialNo+ '</label><br>' +
                 '</td><td>' +
                 '<input type="text" name="Model.PurposesOfTesting" value="' + ListOfBatch[i].refNo + '" class="form-control-plaintext" readonly />  ' +
                 '</td><td>' +
