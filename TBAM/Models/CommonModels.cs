@@ -1,6 +1,24 @@
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 namespace TBAM.Models
 {
+    enum Approval
+    {
+        [Description("Initiator")]
+        Initiator,
+
+        [Description("QC")]
+        QC,
+
+        [Description("Costing")]
+        Costing,
+
+        [Description("Manufacturing Head")]
+        ManufacturingHead,
+
+        [Description("SAP")]
+        SAP
+    }
     public class LoginModel
     {
         [Required]

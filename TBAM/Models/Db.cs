@@ -162,42 +162,63 @@ namespace TBAM.Models
 
     }
 
-    public class TestBatch
-    {
-        [Key]
-        public int Id { get; set; }
-        public string Refno { get; set; }
+public class TestBatch
+{
+    [Key]
+    public int Id { get; set; }
+    public string Refno { get; set; }
 
-        [ForeignKey("PurposesOfTesting")]
-        public  int PurposesOfTestingId { get; set; }
+    [ForeignKey("PurposesOfTesting")]
+    public  int PurposesOfTestingId { get; set; }
 
-        [ForeignKey("Plants")]
-        public  int PlantId { get; set; }
+    [ForeignKey("Plants")]
+    public  int PlantId { get; set; }
 
-        public  string TestDetails { get; set; }
+    public  string TestDetails { get; set; }
 
-        [ForeignKey("User")]
-        public  int CreatedBy { get; set; }
-        public DateTime CreatedAt { get; set; }
+    [ForeignKey("User")]
+    public  int CreatedBy { get; set; }
+    public DateTime CreatedAt { get; set; }
 
-        [ForeignKey("User")]
-        public int? ModifiedBy { get; set; }
-        public DateTime? ModifiedAt { get; set; }
+    [ForeignKey("User")]
+    public int? ModifiedBy { get; set; }
+    public DateTime? ModifiedAt { get; set; }
 
-        [ForeignKey("User")]
-        public int? DeletedBy { get; set; }
-        public DateTime? DeletedAt { get; set; }
-        public Boolean? IsDeleted { get; set; }
+    [ForeignKey("User")]
+    public int? DeletedBy { get; set; }
+    public DateTime? DeletedAt { get; set; }
+    public Boolean? IsDeleted { get; set; }
 
-        [ForeignKey("User")]
-        public int ApprovedBy { get; set; }
+    [ForeignKey("User")]
+    public int ApprovedBy { get; set; }
 
-        [ForeignKey("Role")]
-        public int ApproveLevel { get; set; }
+    [ForeignKey("Role")]
+    public int ApproveLevel { get; set; }
 
-        public required string Status { get; set; }
+    public required string Status { get; set; }
 
-    }
+    public Boolean? isQAApproved { get; set; }
+    public Boolean? isCostingApproved { get; set; }
+    public Boolean? isManufacturingHeadApproved { get; set; }
+    public Boolean? isSAPApproved { get; set; }
+
+    public DateTime? QAApprovedAt { get; set; }
+    public DateTime? CostingApprovedAt { get; set; }
+    public DateTime? ManufacturingHeadApprovedAt { get; set; }
+    public DateTime? SAPApprovedAt { get; set; }
+
+    [ForeignKey("User")]
+    public int? QAApprovedBy { get; set; }
+
+    [ForeignKey("User")]
+    public int? CostingApprovedBy { get; set; }
+
+    [ForeignKey("User")]
+    public int? ManufacturingHeadApprovedBy { get; set; }
+
+    [ForeignKey("User")]
+    public int? SAPApprovedBy { get; set; }
+}
     public class TestBatchItem
     {
         [Key]

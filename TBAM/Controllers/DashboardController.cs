@@ -28,7 +28,7 @@ namespace TBAM.Controllers
 
             var userRole = HttpContext.Session.GetString("userRole");
 
-            var listOfBatchCount = await _dataService.GetDashboardCounts((int)userId);
+            var listOfBatchCount = await _dataService.GetDashboardCounts((int)userId, userRole);
 
             var dashboardCounts = new DashboardViewModel();
 
@@ -97,7 +97,9 @@ namespace TBAM.Controllers
         {
             // Redirect to a success page or return a success message
             var userId = HttpContext.Session.GetInt32("userId");
-            var isCreatedSuccessfully = await _dataService.CreateTestBatch(model, userId);
+            var userRole = HttpContext.Session.GetString("userRole");
+
+            var isCreatedSuccessfully = userRole == "Costing" || userRole == "SAP" ? await _dataService.UpdateTestBatchForCostingAndSAP(model,userId,userRole):await _dataService.CreateTestBatch(model, userId);
 
             if (isCreatedSuccessfully == true)
             {
@@ -134,12 +136,13 @@ namespace TBAM.Controllers
 
                 var isSentForApproval = await _dataService.SendAction(model.RefNo, userRoleId,userId, SendForApproval);
 
-                if (isSentForApproval)
+                
+                if(userRoleId == "Manufacturing Head" )
+                    TempData["Message"] = model.RefNo + " Test batch completed and sent to SAP successfully!";
+                else if (isSentForApproval)
                     TempData["Message"] = model.RefNo + " Test batch sent for approval successfully!";
-                else if(userRoleId == "Manufacturing Head" )
-                {
+                else if(userRoleId == "SAP" )
                     TempData["Message"] = model.RefNo + " Test batch completed successfully!";
-                }
                 else
                     TempData["Message"] = model.RefNo + " Test batch not sent for approval!";
 
