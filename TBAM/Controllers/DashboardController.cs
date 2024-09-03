@@ -143,7 +143,7 @@ namespace TBAM.Controllers
 
                 
 
-                return RedirectToAction("TestBatchList", "Dashboard");
+                return RedirectToAction("TestBatchList", "Dashboard", new{Filter = "Pending"});
             }
 
             return View(model);
@@ -161,7 +161,7 @@ namespace TBAM.Controllers
 
                 //return Json(new { success = true });
 
-                return RedirectToAction("TestBatchList", "Dashboard");
+                return RedirectToAction("TestBatchList", "Dashboard", new{Filter = "Pending"});
             }
 
             return RedirectToAction("Index", "Login");
