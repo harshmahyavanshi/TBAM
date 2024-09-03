@@ -155,8 +155,7 @@ public class DataService
                                                               await _context.TestBatch.Where(p =>p.IsDeleted == false && p.isManufacturingHeadApproved == true).ToListAsync();            
             break;
         case "SAP":
-            dataList = Filter == null ? await _context.TestBatch.Select(p => p).Where(p => p.IsDeleted == false && p.ApproveLevel == role.Id).ToListAsync() :
-                                        Filter == "Pending" ? await _context.TestBatch.Where(p =>p.IsDeleted == false && p.ApproveLevel == role.Id && ( p.isSAPApproved == null || p.isSAPApproved == false)).ToListAsync():
+            dataList = Filter == null || Filter == "Pending" ? await _context.TestBatch.Where(p =>p.IsDeleted == false && p.ApproveLevel == role.Id && ( p.isSAPApproved == null || p.isSAPApproved == false)).ToListAsync():
                                                               await _context.TestBatch.Where(p => p.IsDeleted == false && p.isSAPApproved == true).ToListAsync();            
             break;
     }
