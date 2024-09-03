@@ -99,14 +99,9 @@ namespace TBAM.Controllers
             var userId = HttpContext.Session.GetInt32("userId");
             var userRole = HttpContext.Session.GetString("userRole");
 
-            var isCreatedSuccessfully = userRole == "Costing" || userRole == "SAP" ? await _dataService.UpdateTestBatchForCostingAndSAP(model,userId,userRole):await _dataService.CreateTestBatch(model, userId);
-
-            if (isCreatedSuccessfully == true)
-            {
-                //return RedirectToAction("TestBatchList", "Dashboard");
-            }
-
-            return RedirectToAction("CreateTestBatch", "Dashboard",new {model.RefNo});
+            var refNo = userRole == "Costing" || userRole == "SAP" ? await _dataService.UpdateTestBatchForCostingAndSAP(model,userId,userRole):await _dataService.CreateTestBatch(model, userId);
+            TempData["SaveMessage"] = "Saved";
+            return RedirectToAction("CreateTestBatch", "Dashboard",new {refNo});
         }
 
         public async Task<IActionResult> SendForApproval(string RefNo)

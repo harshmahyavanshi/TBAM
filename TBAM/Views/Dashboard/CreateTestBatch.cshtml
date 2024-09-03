@@ -432,6 +432,15 @@ $(document).on('click', '#confirmSendBackButton', function () {
 
             });
     });
+    if ($('input[name^="LineItems"][name$="Cost"]').val() == "") {
+        $('#sendForApprovalButton').prop('disabled', true);
+    }
+    @if(Model.RefNo == "")
+{
+    //formChanged = true
+    @:$('#sendForApprovalButton').prop('disabled', true);
+}
+
 
     // Add a message "No product added." when no line items are present
     if ($('#lineItemsTable tbody tr').length === 0) {
@@ -482,10 +491,6 @@ function validateForm() {
     return true;
 }
 
-@* @if(Role == "Costing" || Role == "SAP")
-{
-    @:formChanged = true
-    @:$('#sendForApprovalButton').prop('disabled', true);
-} *@
+
 
 </script>

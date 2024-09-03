@@ -26,7 +26,7 @@ public class DataService
     }
 
 
-    public async Task<bool> CreateTestBatch(TestFormViewModel model, int? userId)
+    public async Task<string> CreateTestBatch(TestFormViewModel model, int? userId)
     {
         var isCreatedSuccessfully = false;
 
@@ -119,7 +119,7 @@ public class DataService
 
         isCreatedSuccessfully = true;
 
-        return isCreatedSuccessfully;
+        return testBatchDbModel.Refno;
     }
 
     public async Task<TestBatchListModel> GetTestBatchList(int? userId, string? Filter = null)
@@ -387,8 +387,9 @@ public class DataService
         if (action == 1) // Send for approval
         {
             var nextRole = _context.Role.Where(r => r.RoleName == nextApproval && r.IsDeleted == false).FirstOrDefault();
+            var currentRole = _context.Role.Where(r => r.RoleName == userRole && r.IsDeleted == false).FirstOrDefault();
 
-            pendingApproverTestBatch.ApproveLevel = nextRole.Id;
+            pendingApproverTestBatch.ApproveLevel = nextRole==null ? currentRole.Id : nextRole.Id;
             pendingApproverTestBatch.ModifiedAt = utcDateTimeValue;
             pendingApproverTestBatch.ModifiedBy = userId;
 
@@ -408,6 +409,12 @@ public class DataService
                     pendingApproverTestBatch.isManufacturingHeadApproved = true;
                     pendingApproverTestBatch.ManufacturingHeadApprovedAt = utcDateTimeValue;
                     pendingApproverTestBatch.ManufacturingHeadApprovedBy = userId;
+                    break;
+                case "SAP":
+                    pendingApproverTestBatch.Status = "Completed";
+                    pendingApproverTestBatch.isSAPApproved = true;
+                    pendingApproverTestBatch.SAPApprovedAt = utcDateTimeValue;
+                    pendingApproverTestBatch.SAPApprovedBy = userId;
                     break;
             }
 
@@ -548,10 +555,10 @@ public class DataService
         return productCodes;
     }
 
-    public async Task<bool> UpdateTestBatchForCostingAndSAP(TestFormViewModel model,int? userId, string? userRole){
+    public async Task<string> UpdateTestBatchForCostingAndSAP(TestFormViewModel model,int? userId, string? userRole){
         var dataList = _context.TestBatchItem.Select(p => p).Where(p => p.Refno == model.RefNo && p.IsDeleted == false).ToList();
         var utcDateTimeValue = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Utc);
-
+        
         foreach (var item in model.LineItems)
         {
             var testBatchItem = dataList.FirstOrDefault(tbi => tbi.ProductCode == item.ProductCode);
@@ -570,7 +577,7 @@ public class DataService
 
         await _context.SaveChangesAsync();
 
-        return true;
+        return model.RefNo;
     }
 
 }
