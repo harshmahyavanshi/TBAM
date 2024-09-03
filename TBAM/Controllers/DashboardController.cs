@@ -103,10 +103,10 @@ namespace TBAM.Controllers
 
             if (isCreatedSuccessfully == true)
             {
-                return RedirectToAction("TestBatchList", "Dashboard");
+                //return RedirectToAction("TestBatchList", "Dashboard");
             }
 
-            return View("Index", model);
+            return RedirectToAction("CreateTestBatch", "Dashboard",new {model.RefNo});
         }
 
         public async Task<IActionResult> SendForApproval(string RefNo)

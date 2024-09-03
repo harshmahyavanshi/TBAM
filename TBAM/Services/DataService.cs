@@ -433,16 +433,22 @@ public class DataService
                     pendingApproverTestBatch.QAApprovedBy = null;
                     break;
                 case "Costing":
-                    pendingApproverTestBatch.isCostingApproved = false;
+                    pendingApproverTestBatch.isQAApproved = false;
+
+                    // pendingApproverTestBatch.isCostingApproved = false;
                     pendingApproverTestBatch.CostingApprovedAt = null;
                     pendingApproverTestBatch.CostingApprovedBy = null;
                     break;
                 case "Manufacturing Head":
-                    pendingApproverTestBatch.isManufacturingHeadApproved = false;
+                    pendingApproverTestBatch.isCostingApproved = false;
+
+                    // pendingApproverTestBatch.isManufacturingHeadApproved = false;
                     pendingApproverTestBatch.ManufacturingHeadApprovedAt = null;
                     pendingApproverTestBatch.ManufacturingHeadApprovedBy = null;
                     break;
                 case "SAP":
+                    pendingApproverTestBatch.isManufacturingHeadApproved = false;
+
                     pendingApproverTestBatch.isSAPApproved = false;
                     pendingApproverTestBatch.SAPApprovedAt = null;
                     pendingApproverTestBatch.SAPApprovedBy = null;

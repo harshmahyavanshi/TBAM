@@ -78,92 +78,126 @@
 
                 <hr />
                 }
-                <button id="backButton" type="button" class="btn btn-secondary" onclick="backButtonClicked()">
-                    Back
-                </button>
-                @if(Role == "Costing" || Role == "Initiator" || Role == "SAP")
-                {
-                    @* <button id="backButton" type="button" class="btn btn-secondary"
-                            onclick="backButtonClicked()">
-                        Back
-                    </button> *@
-                    <button id="clickSubmit" type="submit" class="btn btn-success"
-                            onclick="return validateForm()">
-                        Save
-                    </button>
-                }
-          
+               <div class="row">
+    <div class="col-md-6">
 
-                
-                @*
-                    <div>
-<button type="button" class="btn btn-sm btn-warning" id="sendForApprovalButton">
-    Send for Approval
-</button>
-<button type="button" class="btn btn-sm btn-danger" id="sendBackButton">
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-return-left" viewBox="0 0 16 16">
-        <path fill-rule="evenodd" d="M14.5 1.5a.5.5 0 0 1 .5.5v4.8a2.5 2.5 0 0 1-2.5 2.5H2.707l3.347 3.346a.5.5 0 0 1-.708.708l-4.2-4.2a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 8.3H12.5A1.5 1.5 0 0 0 14 6.8V2a.5.5 0 0 1 .5-.5" />
-    </svg>
-</button>
-                    </div>
-                     
-                     
-                      <!-- Modal -->
-                        <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="confirmationModalLabel">Confirmation</h5>
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                    </div>
-                                    <div class="modal-body">
-                                        @using (Html.BeginForm("ConfirmSendForApproval", "Dashboard", FormMethod.Post))
-                                        {
-                                            <input type="hidden" id="refNo" name="RefNo" />
-                                            <div class="alert alert-warning">
-                                                Are you sure you want to send this batch for approval?
-                                            </div>
-                                            <button type="submit" class="btn btn-primary">Yes, send for approval</button>
-                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">No, cancel</button>
-                                        }
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
 
-                        <!-- Modal -->
-<div class="modal fade" id="sendBackConfirmationModal" tabindex="-1" role="dialog" aria-labelledby="sendBackConfirmationModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="sendBackConfirmationModalLabel">Confirmation</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                Are you sure you want to send this batch back?
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">No, cancel</button>
-                <button type="button" class="btn btn-danger" id="confirmSendBackButton">Yes, send back</button>
-            </div>
-        </div>
+                <button type="button" class="btn btn-sm btn-warning ml-2 btn-sm-uniform " id="sendForApprovalButton">
+            Send for Approval
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check" viewBox="0 0 16 16">
+                    <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z"/>
+                    </svg>
+
+        </button>
+        @if(Role != "Initiator"){
+        <button type="button" class="btn btn-sm btn-danger ml-2 btn-sm-uniform " id="sendBackButton"> Send Back 
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-return-left" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M14.5 1.5a.5.5 0 0 1 .5.5v4.8a2.5 2.5 0 0 1-2.5 2.5H2.707l3.347 3.346a.5.5 0 0 1-.708.708l-4.2-4.2a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 8.3H12.5A1.5 1.5 0 0 0 14 6.8V2a.5.5 0 0 1 .5-.5" />
+            </svg>
+        </button>}
+    </div>
+    <div class="col-md-6 d-flex justify-content-end">
+<button id="backButton" type="button" class="btn btn-secondary btn-sm-uniform " onclick="backButtonClicked()">
+            Back
+        </button>&nbsp;&nbsp;
+        @if(Role == "Costing" || Role == "Initiator" || Role == "SAP")
+        {
+            <button id="clickSubmit" type="submit" class="btn btn-success btn-sm-uniform "
+                    onclick="return validateForm()">
+                Save
+            </button>
+        }
+
     </div>
 </div>
-                }
-             *@
-            
+                    
             </form>
         </div>
     </div>
 </div>
 
-           
+ <!-- Modal -->
+            <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="confirmationModalLabel">Confirmation</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        @if(Role == "Manufacturing Head")
+                        {
+                            <div class="modal-body">
+                            @using (Html.BeginForm("ConfirmSendForApproval", "Dashboard", FormMethod.Post))
+                            {
+                                <input type="hidden" id="refNo" name="RefNo" />
+                                <div class="alert alert-warning">
+                                    Are you sure you want to complete this batch?
+                                </div>
+                                <button type="submit" class="btn btn-primary">Yes, complete</button>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">No, cancel</button>
+                            }
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="modal-body">
+                            @using (Html.BeginForm("ConfirmSendForApproval", "Dashboard", FormMethod.Post))
+                            {
+                                <input type="hidden" id="refNo" name="RefNo" />
+                                <div class="alert alert-warning">
+                                    Are you sure you want to send this batch for approval?
+                                </div>
+                                <button type="submit" class="btn btn-primary">Yes, send for approval</button>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">No, cancel</button>
+                            }
+                        </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+ <!-- Modal -->
+            <div class="modal fade" id="sendBackConfirmationModal" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="confirmationModalLabel">Confirmation</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+
+                            <div class="modal-body">
+                            @using (Html.BeginForm("SendBack", "Dashboard", FormMethod.Post))
+                            {
+                                <input type="hidden" id="refNo" name="RefNo" />
+                                <div class="alert alert-warning">
+                                    Are you sure you want to send back this batch?
+                                </div>
+                                <button type="submit" class="btn btn-primary">Yes, send back</button>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">No, cancel</button>
+                            }
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>   
 
 <style>
+.btn-sm-uniform {
+  font-size: 12px;
+  padding: 6px 12px;
+  line-height: 1.5;
+  border-radius: 3px;
+}
     .main-container {
         max-width: 1200px;
         margin: 0 auto;
@@ -221,6 +255,8 @@
         // event listeners to detect form changes
         $('input, select, textarea').on('change', function () {
             formChanged = true;
+            $('#sendForApprovalButton').prop('disabled', true); // disable send for approval button when form changes
+
         });
 
 
@@ -303,6 +339,11 @@
             });
 
         $('#addLineItem').click(function () {
+            formChanged = true;
+
+            $('#sendForApprovalButton').prop('disabled', true); // disable send for approval button when line item is added
+
+
             var selectedProducts = {};
             $('select[name^="LineItems"][name$="ProductCode"]').each(function () {
                 var code = $(this).val();
@@ -356,15 +397,15 @@
 
 @if (Role == "Costing" )
 {
-    @:$('select, textarea ,input:not([name$="Cost"]),button:not([type="submit"]):not([id="backButton"])').addClass('btn btn-sm disabled');
+    @:$('select, textarea ,input:not([name$="Cost"])').addClass('btn btn-sm disabled');
 }
 else if (Role == "SAP" )
 {
-    @:$('select, textarea ,input:not([name$="BatchNumber"]),button:not([type="submit"]):not([id="backButton"])').addClass('btn btn-sm disabled');
+    @:$('select, textarea ,input:not([name$="BatchNumber"])').addClass('btn btn-sm disabled');
 }
 else if (Role != "Initiator")
 {
-    @:$('select, textarea ,input,button:not([type="submit"]):not([id="backButton"])').addClass('btn btn-sm disabled');
+    @:$('select, textarea ,input').addClass('btn btn-sm disabled');
 } 
 
 $(document).on('click', '#sendForApprovalButton', function () {
@@ -383,6 +424,13 @@ $(document).on('click', '#confirmSendBackButton', function () {
     // Call the SendBack controller action here
     window.location.href = '@Url.Action("SendBack", "Dashboard")';
 });
+
+            // event listeners to detect form changes
+            $('input, select, textarea').on('change', function () {
+                formChanged = true;
+                $('#sendForApprovalButton').prop('disabled', true); // disable send for approval button when form changes
+
+            });
     });
 
     // Add a message "No product added." when no line items are present
@@ -392,6 +440,9 @@ $(document).on('click', '#confirmSendBackButton', function () {
 
     async function removeLineItem(index) {
         await $('#lineItemRow' + index).remove();
+        formChanged = true;
+        $('#sendForApprovalButton').prop('disabled', true); // disable send for approval button when line item is added
+
 
         // Re-index the remaining items
         $('#lineItemsTable tbody tr').each(function (newIndex) {
@@ -420,12 +471,21 @@ $(document).on('click', '#confirmSendBackButton', function () {
         }
     }
 
-    function validateForm() {
-        if ($('#lineItemsTable tbody tr').length === 1 && $('#no-products-message').length > 0) {
-            alert("No product added.");
-            return false;
-        }
-        return true;
+// function to validate form and enable send for approval button
+function validateForm() {
+    if ($('#lineItemsTable tbody tr').length === 1 && $('#no-products-message').length > 0) {
+        alert("No product added.");
+        return false;
     }
-    
+    formChanged = false; // reset formChanged flag when form is saved
+    $('#sendForApprovalButton').prop('disabled', false); // enable send for approval button when form is saved
+    return true;
+}
+
+@* @if(Role == "Costing" || Role == "SAP")
+{
+    @:formChanged = true
+    @:$('#sendForApprovalButton').prop('disabled', true);
+} *@
+
 </script>
